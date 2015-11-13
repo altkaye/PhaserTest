@@ -1,4 +1,15 @@
 var gulp = require("gulp");
+var typescript = require("gulp-typescript");
+var concat = require('gulp-concat');
+
+gulp.task("default", function () {
+    gulp.src(["./src/**/*.ts"])
+        .pipe(typescript({ target: "ES5", removeComments: true, sortOutput: true }))
+        .js
+        .pipe(concat("pr.js"))
+        .pipe(gulp.dest("./build/"));
+});
+
 /**
 var uglify = require("gulp-uglify");
 var concat = require('gulp-concat');

@@ -10,6 +10,10 @@ gulp.task("default", function () {
         .pipe(gulp.dest("./build/"));
 });
 
+gulp.task("watch", function() {
+    gulp.watch(["./src/**/*.ts"], ["default"]);
+});
+
 /**
 var uglify = require("gulp-uglify");
 var concat = require('gulp-concat');

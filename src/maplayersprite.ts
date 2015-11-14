@@ -8,9 +8,10 @@ module pr {
         constructor(game: Phaser.Game) {
             super(game, 0, 0);
             var self: any = this;
-            this.canvas = PIXI.CanvasPool.create(self, 32, 32);//TODO must be bug of pixi.d.ts
+            this.canvas = PIXI.CanvasPool.create(self, 640, 480);//TODO must be bug of pixi.d.ts. parent is not HTMLElement actually
             this.context = this.canvas.getContext("2d");
-
+            this.anchor.set(0.5, 0.5);
+            this.position.setTo(320, 240);
             this.build();
         }
 
@@ -19,7 +20,7 @@ module pr {
             var image: any = this.game.cache.getImage("tile");
             console.log(image);
             this.context.drawImage(image, 0, 0, 32, 32, 0, 0, 32, 32);
-
+            this.context.drawImage(image, 32, 32, 32, 32, 32, 32, 32, 32);
         }
 
         public update(): void {

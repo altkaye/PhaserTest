@@ -1,14 +1,18 @@
 ///<reference path="../phaser/typescript/phaser.d.ts"/>
+///<reference path="maplayersprite.ts" />
+
 class MyGameState extends Phaser.State {
     private cursol: Phaser.CursorKeys;
 
     public preload(): void {
         this.load.image("enemy", "img/Enemy/pipo-enemy001.png");
         this.load.image("enemy2", "img/Enemy/pipo-enemy002.png");
+        this.load.image("tile", "img/MapChip/nekura1/m_town.png");
     }
 
     public create(): void {
         super.create();
+        this.cursol = this.game.input.keyboard.createCursorKeys();
         //alert("here is create");
         this.world.setBounds(0, 0, 1920, 1080);
         console.log(this);
@@ -21,7 +25,9 @@ class MyGameState extends Phaser.State {
         sample.addChild(sample02);
         sample02.position.setTo(100, 100);
 
-        this.cursol = this.game.input.keyboard.createCursorKeys();
+        var sample3 : Phaser.Sprite = new pr.MapLayerSprite(this.game);
+        sample3.anchor.set(0.5, 0.5);
+        this.world.addChild(sample3);
     }
 
     public update(): void {

@@ -1,6 +1,7 @@
 var gulp = require("gulp");
 var typescript = require("gulp-typescript");
 var concat = require('gulp-concat');
+var webserver = require('gulp-webserver');
 
 gulp.task("default", function () {
     gulp.src(["./src/**/*.ts"])
@@ -10,9 +11,20 @@ gulp.task("default", function () {
         .pipe(gulp.dest("./build/"));
 });
 
-gulp.task("watch", function() {
+gulp.task('webserver', function () {
+    gulp.src('./')
+        .pipe(webserver({
+            livereload: true,
+            directoryListing: true,
+            open: true
+        }));
+});
+
+gulp.task("watch", function () {
     gulp.watch(["./src/**/*.ts"], ["default"]);
 });
+
+gulp.task("dev", ["webserver", "watch"]);
 
 /**
 var uglify = require("gulp-uglify");

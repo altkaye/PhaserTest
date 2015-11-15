@@ -13,7 +13,7 @@ module pt.sprite {
         private build(game: Phaser.Game, data: pt.model.MapLayerData): PIXI.Texture {
             var canvas = PIXI.CanvasPool.create(<any>this, data.getWidth(), data.getHeight());//TODO must be bug of pixi.d.ts. parent is not HTMLElement actually
             var context = canvas.getContext("2d");
-
+            //console.log(data);
             for (var x = 0; x < data.Column; x++) {
                 for (var y = 0; y < data.Row; y++) {
                     var tile = data.getTile(x, y);

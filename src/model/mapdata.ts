@@ -14,7 +14,7 @@ module pt.model {
         var chipset = new ChipSet("m_town", "img/MapChip/nekura1/m_town.png", 32);
         for (var x = 0; x < col; x++) {
             for (var y = 0; y < col; y++) {
-                layer.addTile(Math.floor(Math.random() * 8), x, y, chipset);
+                layer.addTile(Math.round(Math.random() * 3), x, y, chipset);
             }
         }
         return layer;

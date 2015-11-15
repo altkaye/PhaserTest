@@ -21,6 +21,9 @@ class MyGameState extends Phaser.State {
         //alert("here is create");
         this.world.setBounds(0, 0, 1920, 1080);
         console.log(this);
+
+        var sample3 : Phaser.Sprite = new pt.sprite.MapLayerSprite(this.game, pt.model.buildSampleMapLayer());
+        this.world.addChild(sample3);
         //testing objects and nest
         var sample: Phaser.Sprite = this.game.add.sprite(320, 240, "enemy");
         sample.anchor.setTo(0.5, 0.5);
@@ -29,16 +32,13 @@ class MyGameState extends Phaser.State {
         sample02.anchor.setTo(0.5, 0.5);
         sample.addChild(sample02);
         sample02.position.setTo(100, 100);
-
-        var sample3 : Phaser.Sprite = new pt.sprite.MapLayerSprite(this.game, pt.model.buildSampleMapLayer());
-        this.world.addChild(sample3);
-
         var sample4 : Phaser.Sprite = new pt.sprite.CharacterSprite(this.game, 50, 50, "chara");
         this.world.addChild(sample4)
         sample4.animations.play(pt.sprite.CharacterSprite.ANIM_UPLEFT);
 
         var panel :Phaser.Sprite = new pt.sprite.PanelSprite(this.game, 300, 300, 100, 60, "panel");
         this.world.addChild(panel);
+
     }
 
     public update(): void {

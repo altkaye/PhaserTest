@@ -10,7 +10,7 @@ module pt.sprite {
             var canvas = PIXI.CanvasPool.create(<any>this, width, height);//TODO must be bug of pixi.d.ts. parent is not HTMLElement actually
             var context = canvas.getContext("2d");
 
-            console.log(image);
+            //console.log(image);
             var src = {
                 w: 0, h: 0, x: 0, y: 0
             };

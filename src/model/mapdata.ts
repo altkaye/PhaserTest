@@ -44,6 +44,10 @@ module pt.model {
             this.key = key;
             this.id = id;
         }
+
+        public equals(o:Tile):boolean {
+            return o.Id === this.id && o.Key === this.key;
+        }
     }
 
     export class MapLayerData {

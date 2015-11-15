@@ -17,10 +17,12 @@ class MyGameState extends Phaser.State {
 
     public create(): void {
         super.create();
+
+
         this.cursol = this.game.input.keyboard.createCursorKeys();
         //alert("here is create");
         this.world.setBounds(0, 0, 1920, 1080);
-        console.log(this);
+        //console.log(this);
 
         var sample3 : Phaser.Sprite = new pt.sprite.MapLayerSprite(this.game, pt.model.buildSampleMapLayer());
         this.world.addChild(sample3);

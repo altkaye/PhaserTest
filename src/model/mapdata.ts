@@ -9,7 +9,7 @@ module pt.model {
         return map;
     }
 
-    export function buildSampleMapLayer(col = 30, row = 30):MapLayerData {
+    export function buildSampleMapLayer(col = 30, row = 30): MapLayerData {
         var layer = new MapLayerData("layer01", col, row);
         var chipset = new ChipSet("m_town", "img/MapChip/nekura1/m_town.png", 32);
         for (var x = 0; x < col; x++) {
@@ -29,6 +29,8 @@ module pt.model {
     }
 
     export class Tile {
+        public static EMPTY: Tile = new Tile("", -1);
+
         private key: string;
         private id: number;
 
@@ -45,9 +47,10 @@ module pt.model {
             this.id = id;
         }
 
-        public equals(o:Tile):boolean {
+        public equals(o: Tile): boolean {
             return o.Id === this.id && o.Key === this.key;
         }
+
     }
 
     export class MapLayerData {
@@ -85,7 +88,12 @@ module pt.model {
         }
 
         public getTile(x: number, y: number): Tile {
-            return this.tiles[this.getIndexOf(x, y)];
+            var ret = this.tiles[this.getIndexOf(x, y)];
+            if (!ret) {
+                return Tile.EMPTY;
+            } else {
+                return ret;
+            }
         }
 
         public getChipSetOf(tile: Tile): ChipSet {
@@ -182,15 +190,15 @@ module pt.model {
         private path: string;
         private type: ChipSetType;
         private defaultPassability: Array<Passability>;
-        private size:number;
+        private size: number;
 
         get Key(): string {
             return this.key;
         }
-        get Type():ChipSetType {
+        get Type(): ChipSetType {
             return this.type;
         }
-        get Size():number {
+        get Size(): number {
             return this.size;
         }
 

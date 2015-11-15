@@ -17,18 +17,19 @@ module pt.sprite {
             for (var x = 0; x < data.Column; x++) {
                 for (var y = 0; y < data.Row; y++) {
                     var tile = data.getTile(x, y);
-                    var chipset = data.getChipSetOf(tile);
-                    var image = game.cache.getImage(chipset.Key, true);
+                    if (!tile.equals(pt.model.Tile.EMPTY)) {
+                        var chipset = data.getChipSetOf(tile);
+                        var image = game.cache.getImage(chipset.Key, true);
 
-                    switch (chipset.Type) {
-                        case pt.model.ChipSetType.DEFAULT:
-                            this.drawDefaultTile(image.data, context, tile.Id, chipset.Size, x, y);
-                            break;
-                        case pt.model.ChipSetType.AUTO:
-                            this.drawAutoTile(image.data, context, tile, chipset.Size, x, y, data);
-                            break;
+                        switch (chipset.Type) {
+                            case pt.model.ChipSetType.DEFAULT:
+                                this.drawDefaultTile(image.data, context, tile.Id, chipset.Size, x, y);
+                                break;
+                            case pt.model.ChipSetType.AUTO:
+                                this.drawAutoTile(image.data, context, tile, chipset.Size, x, y, data);
+                                break;
+                        }
                     }
-
                 }
             }
 

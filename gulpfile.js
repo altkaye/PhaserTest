@@ -2,9 +2,11 @@ var gulp = require("gulp");
 var typescript = require("gulp-typescript");
 var concat = require('gulp-concat');
 var webserver = require('gulp-webserver');
+var plumber = require("gulp-plumber");
 
 gulp.task("default", function () {
     gulp.src(["./src/**/*.ts"])
+        .pipe(plumber())
         .pipe(typescript({ target: "ES5", removeComments: true, sortOutput: true }))
         .js
         .pipe(concat("pr.js"))

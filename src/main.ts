@@ -1,5 +1,7 @@
 ///<reference path="../phaser/typescript/phaser.d.ts"/>
-///<reference path="maplayersprite.ts" />
+///<reference path="sprite/maplayersprite.ts" />
+///<reference path="sprite/charactersprite.ts" />
+///<reference path="sprite/panelsprite.ts" />
 
 class MyGameState extends Phaser.State {
     private cursol: Phaser.CursorKeys;
@@ -8,7 +10,8 @@ class MyGameState extends Phaser.State {
         this.load.image("enemy", "img/Enemy/pipo-enemy001.png");
         this.load.image("enemy2", "img/Enemy/pipo-enemy002.png");
         this.load.image("tile", "img/MapChip/nekura1/m_town.png");
-        this.load.spritesheet("chara", "img/CharaChip/16_hero1.png", 26, 42);
+        this.load.image("chara", "img/CharaChip/16_hero1.png");
+        this.load.image("panel", "img/Panel/pipo-WindowBase006.png")
         this.game.time.advancedTiming = true;
     }
 
@@ -27,12 +30,15 @@ class MyGameState extends Phaser.State {
         sample.addChild(sample02);
         sample02.position.setTo(100, 100);
 
-        var sample3 : Phaser.Sprite = new pr.MapLayerSprite(this.game);
+        var sample3 : Phaser.Sprite = new pt.sprite.MapLayerSprite(this.game);
         this.world.addChild(sample3);
 
-        var sample4 : Phaser.Sprite = this.game.add.sprite(100, 100, "chara");
-        sample4.animations.add("down", [0, 1, 2, 1], 4, true);
-        sample4.animations.play("down");
+        var sample4 : Phaser.Sprite = new pt.sprite.CharacterSprite(this.game, 50, 50, "chara");
+        this.world.addChild(sample4)
+        sample4.animations.play(pt.sprite.CharacterSprite.ANIM_UPLEFT);
+
+        var panel :Phaser.Sprite = new pt.sprite.PanelSprite(this.game, 300, 300, 100, 60, "panel");
+        this.world.addChild(panel);
     }
 
     public update(): void {

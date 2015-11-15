@@ -1,6 +1,6 @@
-///<reference path="../phaser/typescript/phaser.d.ts"/>
+///<reference path="../../phaser/typescript/phaser.d.ts"/>
 
-module pr {
+module pt.sprite {
     export class MapLayerSprite extends Phaser.Sprite {
         private canvas: HTMLCanvasElement;
         private context: CanvasRenderingContext2D;

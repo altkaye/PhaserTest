@@ -7,8 +7,7 @@ module pt.sprite {
         }
 
         private build(width: number, height: number, image: Phaser.CachedImage): PIXI.Texture {
-            var self: any = this;
-            var canvas = PIXI.CanvasPool.create(self, width, height);//TODO must be bug of pixi.d.ts. parent is not HTMLElement actually
+            var canvas = PIXI.CanvasPool.create(<any>this, width, height);//TODO must be bug of pixi.d.ts. parent is not HTMLElement actually
             var context = canvas.getContext("2d");
 
             console.log(image);

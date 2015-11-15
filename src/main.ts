@@ -9,7 +9,7 @@ class MyGameState extends Phaser.State {
     public preload(): void {
         this.load.image("enemy", "img/Enemy/pipo-enemy001.png");
         this.load.image("enemy2", "img/Enemy/pipo-enemy002.png");
-        this.load.image("tile", "img/MapChip/nekura1/m_town.png");
+        this.load.image("m_town", "img/MapChip/nekura1/m_town.png");
         this.load.image("chara", "img/CharaChip/16_hero1.png");
         this.load.image("panel", "img/Panel/pipo-WindowBase006.png")
         this.game.time.advancedTiming = true;
@@ -30,7 +30,7 @@ class MyGameState extends Phaser.State {
         sample.addChild(sample02);
         sample02.position.setTo(100, 100);
 
-        var sample3 : Phaser.Sprite = new pt.sprite.MapLayerSprite(this.game);
+        var sample3 : Phaser.Sprite = new pt.sprite.MapLayerSprite(this.game, pt.model.buildSampleMapLayer());
         this.world.addChild(sample3);
 
         var sample4 : Phaser.Sprite = new pt.sprite.CharacterSprite(this.game, 50, 50, "chara");

@@ -1,25 +1,55 @@
 ///<reference path="../../phaser/typescript/phaser.d.ts"/>
-
+///<reference path="../model/mapdata.ts"/>
 module pt.sprite {
     export class MapLayerSprite extends Phaser.Sprite {
-        private canvas: HTMLCanvasElement;
-        private context: CanvasRenderingContext2D;
+        // private data:pt.model.MapLayerData;
 
-        constructor(game: Phaser.Game) {
-            super(game, 0, 0);
-            this.canvas = PIXI.CanvasPool.create(<any>this, 640, 480);//TODO must be bug of pixi.d.ts. parent is not HTMLElement actually
-            this.context = this.canvas.getContext("2d");
+        constructor(game: Phaser.Game, data: pt.model.MapLayerData) {
+            super(game, 0, 0, this.build(game, data));
             this.anchor.set(0.5, 0.5);
-            this.position.setTo(320, 240);
-            this.build();
+            this.position.setTo(data.getWidth() / 2, data.getHeight() / 2);
         }
 
-        private build(): void {
-            this.setTexture(new PIXI.Texture(new PIXI.BaseTexture(this.canvas, PIXI.scaleModes.DEFAULT)));
-            var image: any = this.game.cache.getImage("tile");
-            console.log(image);
-            this.context.drawImage(image, 0, 0, 32, 32, 0, 0, 32, 32);
-            this.context.drawImage(image, 32, 32, 32, 32, 32, 32, 32, 32);
+        private build(game: Phaser.Game, data: pt.model.MapLayerData): PIXI.Texture {
+            var canvas = PIXI.CanvasPool.create(<any>this, data.getWidth(), data.getHeight());//TODO must be bug of pixi.d.ts. parent is not HTMLElement actually
+            var context = canvas.getContext("2d");
+
+            for (var x = 0; x < data.Column; x++) {
+                for (var y = 0; y < data.Row; y++) {
+                    var tile = data.getTile(x, y);
+                    var chipset = data.getChipSetOf(tile);
+                    var image = game.cache.getImage(chipset.Key, true);
+
+                    switch (chipset.Type) {
+                        case pt.model.ChipSetType.DEFAULT:
+                            this.drawDefaultTile(image.data, context, tile.Id, chipset.Size, x, y);
+                            break;
+                        case pt.model.ChipSetType.AUTO:
+                            //TODO
+                            break;
+                    }
+
+                }
+            }
+
+            return new PIXI.Texture(new PIXI.BaseTexture(canvas, PIXI.scaleModes.DEFAULT));
+        }
+
+        private drawDefaultTile(image: HTMLImageElement, context: CanvasRenderingContext2D, tileId: number, chipsetSize: number, x: number, y: number, layerTileSize = chipsetSize): void {
+            var atlasColumn = image.width / chipsetSize;
+            var src = {
+                x: Math.floor(tileId % atlasColumn) * chipsetSize,
+                y: Math.floor(tileId / atlasColumn) * chipsetSize,
+                w: chipsetSize,
+                h: chipsetSize
+            }
+            var dst = {
+                x: x * layerTileSize,
+                y: y * layerTileSize,
+                w: layerTileSize,
+                h: layerTileSize
+            }
+            context.drawImage(image, src.x, src.y, src.w, src.h, dst.x, dst.y, dst.w, dst.h);
         }
 
         public update(): void {

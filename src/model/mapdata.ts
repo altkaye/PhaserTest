@@ -1,18 +1,46 @@
-module pr.model {
-    export function buildSampleMap(): MapData {
-        var ret = new MapData(0, "sample map", 30, 30);
+module pt.model {
+    export function buildSampleMapData(): MapData {
+        var col = 30;
+        var row = 30;
+        var map = new MapData(0, "sample map", col, row);
+        var layer = buildSampleMapLayer();
+        map.addLayer(layer);
 
-        return null;
+        return map;
+    }
+
+    export function buildSampleMapLayer(col = 30, row = 30):MapLayerData {
+        var layer = new MapLayerData("layer01", col, row);
+        var chipset = new ChipSet("m_town", "img/MapChip/nekura1/m_town.png", 32);
+        for (var x = 0; x < col; x++) {
+            for (var y = 0; y < col; y++) {
+                layer.addTile(Math.floor(Math.random() * 8), x, y, chipset);
+            }
+        }
+        return layer;
     }
 
     export enum Passability {
         PASSABLE = 0, IMPASSABLE = -1
     }
 
+    export enum ChipSetType {
+        DEFAULT = 0, AUTO = 1
+    }
+
     export class Tile {
         private key: string;
         private id: number;
-        constructor(key:string, id:number) {
+
+        get Key(): string {
+            return this.key;
+        }
+
+        get Id(): number {
+            return this.id;
+        }
+
+        constructor(key: string, id: number) {
             this.key = key;
             this.id = id;
         }
@@ -25,18 +53,49 @@ module pr.model {
         private chipsets: Array<ChipSet>;
         private tiles: Array<Tile>;
         private passabilities: Array<Passability>;
+        private tileSize: number;
 
-        constructor(name: string, column: number, row: number, chipsets: Array<ChipSet> = [], tiles: Array<Tile> = [], passabilities: Array<Passability> = []) {
+        get Column(): number {
+            return this.column;
+        }
+        get Row(): number {
+            return this.row;
+        }
+
+        constructor(name: string, column: number, row: number, chipsets: Array<ChipSet> = [], tiles: Array<Tile> = [], passabilities: Array<Passability> = [], tileSize: number = 32) {
             this.name = name;
             this.column = column;
             this.row = row;
             this.chipsets = chipsets;
             this.tiles = tiles;
+            this.tileSize = tileSize;
             this.passabilities = passabilities;
         }
 
-        public addTile(id: number, x: number, y: number, chipsetKey: string | ChipSet = this.chipsets[0], passability?:Passability): boolean {
-            var chipset:ChipSet;
+        public getWidth(): number {
+            return this.tileSize * this.column;
+        }
+
+        public getHeight(): number {
+            return this.tileSize * this.row;
+        }
+
+        public getTile(x: number, y: number): Tile {
+            return this.tiles[this.getIndexOf(x, y)];
+        }
+
+        public getChipSetOf(tile: Tile): ChipSet {
+            var ret;
+            this.chipsets.forEach((c) => {
+                if (tile.Key === c.Key) {
+                    ret = c;
+                }
+            });
+            return ret;
+        }
+
+        public addTile(id: number, x: number, y: number, chipsetKey: string | ChipSet = this.chipsets[0], passability?: Passability): boolean {
+            var chipset: ChipSet;
 
             var has: boolean = this.chipsets.some((c) => {
                 if (typeof chipsetKey === "string") {
@@ -57,14 +116,14 @@ module pr.model {
             });
 
             if (has) {
-                var tile = new pr.model.Tile(chipset.Key, id);
+                var tile = new pt.model.Tile(chipset.Key, id);
                 this.tiles[this.getIndexOf(x, y)] = tile;
                 passability = passability || chipset.getPassability(id);
                 this.setPassability(x, y, passability);
                 return true;
             } else if (typeof chipsetKey !== "string") {
                 this.addChipset(chipsetKey);
-                var tile = new pr.model.Tile(chipsetKey.Key, id);
+                var tile = new pt.model.Tile(chipsetKey.Key, id);
                 this.tiles[this.getIndexOf(x, y)] = tile;
                 passability = passability || chipsetKey.getPassability(id);
                 this.setPassability(x, y, passability);
@@ -74,11 +133,11 @@ module pr.model {
             }
         }
 
-        public setPassability(x:number, y:number, pass:Passability) {
+        public setPassability(x: number, y: number, pass: Passability) {
             this.passabilities[this.getIndexOf(x, y)] = pass;
         }
 
-        private getIndexOf(x:number, y:number):number {
+        private getIndexOf(x: number, y: number): number {
             return x + y * this.column;
         }
 
@@ -104,33 +163,42 @@ module pr.model {
             this.layers = layers;
         }
 
-        public addLayer(layer: MapLayerData, index: number = this.layers.length): MapData {
-            this.layers[index] = layer;
+        public addLayer(layer: MapLayerData, index?: number): MapData {
+            if (index) {
+                this.layers[index] = layer;
+            } else {
+                this.layers.push(layer);
+            }
             return this;
         }
     }
 
     export class ChipSet {
-        public static TYPE_DEFAULT = "default";
-        public static TYPE_AUTOTILE = "auto";
-
         private key: string;
         private path: string;
-        private type: string;
+        private type: ChipSetType;
         private defaultPassability: Array<Passability>;
-
-        constructor(key: string, path: string, type: string = pr.model.ChipSet.TYPE_DEFAULT, defaultPassability: Array<number> = [0]) {
-            this.key = key;
-            this.path = path;
-            this.type = type;
-            this.defaultPassability = defaultPassability;
-        }
+        private size:number;
 
         get Key(): string {
             return this.key;
         }
+        get Type():ChipSetType {
+            return this.type;
+        }
+        get Size():number {
+            return this.size;
+        }
 
-        public getPassability(id:number):Passability {
+        constructor(key: string, path: string, size = 32, type: ChipSetType = ChipSetType.DEFAULT, defaultPassability: Array<number> = [0]) {
+            this.key = key;
+            this.path = path;
+            this.type = type;
+            this.defaultPassability = defaultPassability;
+            this.size = size;
+        }
+
+        public getPassability(id: number): Passability {
             if (this.defaultPassability.length <= id) {
                 return Passability.PASSABLE;
             } else {
@@ -138,7 +206,7 @@ module pr.model {
             }
         }
 
-        public equals(c:ChipSet) : boolean {
+        public equals(c: ChipSet): boolean {
             return this.key === c.Key;//TODO
         }
     }

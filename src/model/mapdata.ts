@@ -68,6 +68,9 @@ module pt.model {
         get Row(): number {
             return this.row;
         }
+        get Chipsets(): Array<ChipSet> {
+            return this.chipsets;
+        }
 
         constructor(name: string, column: number, row: number, chipsets: Array<ChipSet> = [], tiles: Array<Tile> = [], passabilities: Array<Passability> = [], tileSize: number = 32) {
             this.name = name;
@@ -165,6 +168,26 @@ module pt.model {
         private column: number;
         private row: number;
         private layers: Array<MapLayerData>;
+
+        /**
+         * get all ChipSet used in this map
+         */
+        get Chipsets():Array<ChipSet> {
+            var ret:Array<ChipSet> = [];
+            this.layers.forEach((l) => {
+                ret = ret.concat(l.Chipsets);
+            });
+            //remove duplication
+            for (var i = 0; i < ret.length; i++) {
+                for (var k = i + 1; k < ret.length; k++) {
+                    if (ret[i].equals(ret[k])) {
+                        ret.splice(k, 1);
+                        k--;
+                    }
+                }
+            }
+            return ret;
+        }
 
         constructor(id: number, name: string, column: number, row: number, layers: Array<MapLayerData> = []) {
             this.id = id;

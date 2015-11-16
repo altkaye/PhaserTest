@@ -40,6 +40,10 @@ module pt.model {
             return this.id;
         }
 
+        public static fromJSON(json:any):Tile {
+            return new Tile(json.key, json.id);
+        }
+
         constructor(key: string, id: number) {
             this.key = key;
             this.id = id;
@@ -68,6 +72,18 @@ module pt.model {
         }
         get Chipsets(): Array<ChipSet> {
             return this.chipsets;
+        }
+
+        public static fromJSON(json:any) {
+            var chipsets = [];
+            json.chipsets.forEach((c) => {
+                chipsets.push(ChipSet.fromJSON(c));
+            });
+            var tiles = []
+            json.tiles.forEach((t) => {
+                tiles.push(Tile.fromJSON(t));
+            });
+            return new MapLayerData(json.name, json.column, json.row, chipsets, tiles, json.passabilities, json.tileSize);
         }
 
         constructor(name: string, column: number, row: number, chipsets: Array<ChipSet> = [], tiles: Array<Tile> = [], passabilities: Array<Passability> = [], tileSize: number = 32) {
@@ -187,6 +203,15 @@ module pt.model {
             return ret;
         }
 
+        public static fromJSON(json:any):MapData {
+            var layers = [];
+            json.layers.forEach((l) => {
+                layers.push(MapLayerData.fromJSON(l));
+            });
+            var ret = new MapData(json.id, json.name, json.column, json.row, layers);
+            return ret;
+        }
+
         constructor(id: number, name: string, column: number, row: number, layers: Array<MapLayerData> = []) {
             this.id = id;
             this.name = name;
@@ -226,6 +251,10 @@ module pt.model {
         }
         get Size(): number {
             return this.size;
+        }
+
+        public static fromJSON(json:any):ChipSet {
+            return new ChipSet(json.key, json.path, json.size, json.type, json.defaultPassability);
         }
 
         constructor(key: string, path: string, size = 32, type: ChipSetType = ChipSetType.DEFAULT, defaultPassability: Array<number> = [0]) {

@@ -26,8 +26,13 @@ class MyGameState extends Phaser.State {
         //alert("here is create");
        // console.log(m);
        // console.log(m.Chipsets);
+        var data = pt.model.buildSampleMapData(30, 30);
 
-        var map = new pt.object.Map(this.game, pt.model.buildSampleMapData(30, 30));
+        var json = JSON.parse(JSON.stringify(data));
+        console.log(json);
+        var reverted = pt.model.MapData.fromJSON(json);
+        console.log(reverted);
+        var map = new pt.object.Map(this.game, reverted);
         this.world.addChild(map);
         //map.position.setTo(map.Center.x, map.Center.y);
         this.world.setBounds(0, 0, map.Width, map.Height);

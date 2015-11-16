@@ -1,9 +1,9 @@
 module pt.model {
     export function buildSampleMapData(): MapData {
-        var col = 30;
-        var row = 30;
+        var col = 5;
+        var row = 5;
         var map = new MapData(0, "sample map", col, row);
-        var layer = buildSampleMapLayer();
+        var layer = buildSampleMapLayer(col, row);
         map.addLayer(layer);
 
         return map;
@@ -196,6 +196,11 @@ module pt.model {
             this.row = row;
 
             this.layers = layers;
+        }
+
+
+        get Layers():Array<MapLayerData> {
+            return this.layers;
         }
 
         public addLayer(layer: MapLayerData, index?: number): MapData {

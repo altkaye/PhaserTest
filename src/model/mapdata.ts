@@ -1,7 +1,5 @@
 module pt.model {
-    export function buildSampleMapData(): MapData {
-        var col = 5;
-        var row = 5;
+    export function buildSampleMapData(col = 5, row = 5): MapData {
         var map = new MapData(0, "sample map", col, row);
         var layer = buildSampleMapLayer(col, row);
         map.addLayer(layer);

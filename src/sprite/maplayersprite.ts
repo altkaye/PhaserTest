@@ -2,10 +2,15 @@
 ///<reference path="../model/mapdata.ts"/>
 module pt.sprite {
     export class MapLayerSprite extends Phaser.Sprite {
-        // private data:pt.model.MapLayerData;
+        private context: CanvasRenderingContext2D;
 
         constructor(game: Phaser.Game, data: pt.model.MapLayerData) {
             super(game, 0, 0, this.build(game, data));
+
+        }
+
+        public rebuild(data:pt.model.MapLayerData) {
+            this.setTexture(this.build(this.game, data));
         }
 
         private build(game: Phaser.Game, data: pt.model.MapLayerData): PIXI.Texture {
@@ -14,24 +19,28 @@ module pt.sprite {
             //console.log(data);
             for (var x = 0; x < data.Column; x++) {
                 for (var y = 0; y < data.Row; y++) {
-                    var tile = data.getTile(x, y);
-                    if (!tile.equals(pt.model.Tile.EMPTY)) {
-                        var chipset = data.getChipSetOf(tile);
-                        var image = game.cache.getImage(chipset.Key, true);
-
-                        switch (chipset.Type) {
-                            case pt.model.ChipSetType.DEFAULT:
-                                this.drawDefaultTile(image.data, context, tile.Id, chipset.Size, x, y);
-                                break;
-                            case pt.model.ChipSetType.AUTO:
-                                this.drawAutoTile(image.data, context, tile, chipset.Size, x, y, data);
-                                break;
-                        }
-                    }
+                    this.drawTile(game, x, y, data, context);
                 }
             }
-
+            this.context = context;
             return new PIXI.Texture(new PIXI.BaseTexture(canvas, PIXI.scaleModes.DEFAULT));
+        }
+
+        public drawTile(game: Phaser.Game, x: number, y: number, data: pt.model.MapLayerData, context: CanvasRenderingContext2D = this.context) {
+            var tile = data.getTile(x, y);
+            if (!tile.equals(pt.model.Tile.EMPTY)) {
+                var chipset = data.getChipSetOf(tile);
+                var image = game.cache.getImage(chipset.Key, true);
+
+                switch (chipset.Type) {
+                    case pt.model.ChipSetType.DEFAULT:
+                        this.drawDefaultTile(image.data, context, tile.Id, chipset.Size, x, y);
+                        break;
+                    case pt.model.ChipSetType.AUTO:
+                        this.drawAutoTile(image.data, context, tile, chipset.Size, x, y, data);
+                        break;
+                }
+            }
         }
 
         private drawAutoTile(image: HTMLImageElement, context: CanvasRenderingContext2D, tile: pt.model.Tile, chipsetSize: number, x: number, y: number, data: pt.model.MapLayerData, layerTileSize = chipsetSize) {
@@ -82,9 +91,9 @@ module pt.sprite {
                         w: layerTileSize,
                         h: layerTileSize
                     }
-                    dst.x += chipsetSize / 2;
+                    dst.x += i * layerTileSize / 2;
                     dst.w /= 2;
-                    dst.y += (j * chipsetSize / 2);
+                    dst.y += (j * layerTileSize / 2);
                     dst.h /= 2;
                     context.drawImage(image,
                         src.x, src.y, src.w, src.h,

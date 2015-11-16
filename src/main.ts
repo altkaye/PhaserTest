@@ -12,6 +12,7 @@ class MyGameState extends Phaser.State {
         this.load.image("enemy", "img/Enemy/pipo-enemy001.png");
         this.load.image("enemy2", "img/Enemy/pipo-enemy002.png");
         this.load.image("m_town", "img/MapChip/nekura1/m_town.png");
+        this.load.image("t_town02", "img/MapChip/nekura1/t_town02.png");
         this.load.image("chara", "img/CharaChip/16_hero1.png");
         this.load.image("panel", "img/Panel/pipo-WindowBase006.png")
         this.game.time.advancedTiming = true;
@@ -23,14 +24,22 @@ class MyGameState extends Phaser.State {
 
         this.cursol = this.game.input.keyboard.createCursorKeys();
         //alert("here is create");
-        this.world.setBounds(0, 0, 1920, 1080);
-        var m = pt.model.buildSampleMapData();
        // console.log(m);
        // console.log(m.Chipsets);
 
-        var map = new pt.object.Map(this.game, pt.model.buildSampleMapData());
+        var map = new pt.object.Map(this.game, pt.model.buildSampleMapData(30, 30));
         this.world.addChild(map);
-        map.position.setTo(map.Center.x, map.Center.y);
+        //map.position.setTo(map.Center.x, map.Center.y);
+        this.world.setBounds(0, 0, map.Width, map.Height);
+
+        map.Layers[0].inputEnabled = true;
+        map.Layers[0].events.onInputDown.add((l:pt.object.MapLayer, p:Phaser.Pointer) => {
+            var local = pt.util.worldToLocal(p.worldX, p.worldY, l);
+            local.x /= 32;
+            local.y /= 32;
+            console.log("map clicked:" + JSON.stringify(local));
+            l.addTile(0, local.x, local.y, new pt.model.ChipSet("t_town02", "", 32, pt.model.ChipSetType.AUTO));
+        });
 
         //testing objects and nest
         var sample: Phaser.Sprite = this.game.add.sprite(320, 240, "enemy");
@@ -42,7 +51,7 @@ class MyGameState extends Phaser.State {
         sample02.position.setTo(100, 100);
         var sample4 : Phaser.Sprite = new pt.sprite.CharacterSprite(this.game, 50, 50, "chara");
         this.world.addChild(sample4)
-        sample4.animations.play(pt.sprite.CharacterSprite.ANIM_UPLEFT);
+        sample4.animations.play(pt.sprite.CharacterSprite.ANIM_DOWN);
 
         var panel :Phaser.Sprite = new pt.sprite.PanelSprite(this.game, 300, 300, 100, 60, "panel");
         sample.addChild(panel);

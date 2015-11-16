@@ -33,6 +33,7 @@ class MyGameState extends Phaser.State {
         this.world.setBounds(0, 0, map.Width, map.Height);
 
         map.Layers[0].inputEnabled = true;
+        map.Layers[0].input.priorityID = 1;
         map.Layers[0].events.onInputDown.add((l:pt.object.MapLayer, p:Phaser.Pointer) => {
             var local = pt.util.worldToLocal(p.worldX, p.worldY, l);
             local.x /= 32;
@@ -57,6 +58,7 @@ class MyGameState extends Phaser.State {
         sample.addChild(panel);
         panel.anchor.setTo(0.5, 0.5);
         panel.inputEnabled = true;
+        panel.input.priorityID = 0;
         panel.events.onInputDown.add((s, p) => {
             var pointer:Phaser.Pointer = p;
             console.log(s);

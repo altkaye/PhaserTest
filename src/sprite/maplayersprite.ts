@@ -2,14 +2,15 @@
 ///<reference path="../model/mapdata.ts"/>
 module pt.sprite {
     export class MapLayerSprite extends Phaser.Sprite {
-        private context: CanvasRenderingContext2D;
+        protected context: CanvasRenderingContext2D;
+        protected canvas: HTMLCanvasElement;
 
         constructor(game: Phaser.Game, data: pt.model.MapLayerData) {
             super(game, 0, 0, this.build(game, data));
-
         }
 
         public rebuild(data:pt.model.MapLayerData) {
+            this.texture.destroy(true);
             this.setTexture(this.build(this.game, data));
         }
 
@@ -23,6 +24,7 @@ module pt.sprite {
                 }
             }
             this.context = context;
+            this.canvas = canvas;
             return new PIXI.Texture(new PIXI.BaseTexture(canvas, PIXI.scaleModes.DEFAULT));
         }
 

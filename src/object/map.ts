@@ -19,6 +19,7 @@ module pt.object {
             console.log("addtile:" + this.data.addTile(id, x, y, chipset, passability));
             this.rebuild(this.data);//TODO
             //this.drawTile(this.game, x, y, this.data);
+            //this.texture.requiresUpdate = true;
         }
     }
 

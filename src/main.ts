@@ -1,5 +1,6 @@
 ///<reference path="../phaser/typescript/phaser.d.ts"/>
 ///<reference path="object/map.ts" />
+///<reference path="object/character.ts" />
 ///<reference path="model/mapdata.ts" />
 ///<reference path="sprite/charactersprite.ts" />
 ///<reference path="sprite/panelsprite.ts" />
@@ -55,15 +56,12 @@ class MyGameState extends Phaser.State {
         sample02.anchor.setTo(0.5, 0.5);
         sample.addChild(sample02);
         sample02.position.setTo(100, 100);
-        var sample4 : Phaser.Sprite = new pt.sprite.CharacterSprite(this.game, 50, 50, "chara");
-        this.world.addChild(sample4)
-        sample4.animations.play(pt.sprite.CharacterSprite.ANIM_DOWN);
 
         var panel :Phaser.Sprite = new pt.sprite.PanelSprite(this.game, 300, 300, 100, 60, "panel");
         sample.addChild(panel);
         panel.anchor.setTo(0.5, 0.5);
         panel.inputEnabled = true;
-        panel.input.priorityID = 0;
+        panel.input.priorityID = 2;
         panel.events.onInputDown.add((s, p) => {
             var pointer:Phaser.Pointer = p;
             console.log(s);
@@ -71,6 +69,10 @@ class MyGameState extends Phaser.State {
             console.log(pt.util.worldToLocal(pointer.worldX, pointer.worldY, panel));
             panel.worldPosition.set(pointer.worldX, pointer.worldY);
         });
+
+        var sample4 = new pt.object.Character(this.game, "chara");
+        this.world.addChild(sample4)
+        sample4.position.setTo(200, 30);
     }
 
     public update(): void {

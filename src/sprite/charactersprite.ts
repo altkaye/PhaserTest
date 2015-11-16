@@ -43,5 +43,60 @@ module pt.sprite {
             this.animations.add(self.ANIM_UPRIGHT, [21, 22, 23, 22], freq, true);
         }
 
+        public getWalkAnimation(forward = pt.util.Point.DOWN) :string {
+            var self = pt.sprite.CharacterSprite;
+            var anim = self.ANIM_DOWN;
+            
+            /** set down first**/
+            var init = forward.dot(pt.util.Point.DOWN);
+            var next = 0;
+
+            /** up **/
+            next = forward.dot(pt.util.Point.UP);
+            if (init < next) {
+                anim = self.ANIM_UP;
+                init = next;
+            }
+
+            /** check for left **/
+            next = forward.dot(pt.util.Point.UPLEFT);
+            if (init < next) {
+                anim = self.ANIM_UPLEFT;
+                init = next;
+            }
+
+            next = forward.dot(pt.util.Point.LEFT);
+            if (init < next) {
+                anim = self.ANIM_LEFT;
+                init = next;
+            }
+
+            next = forward.dot(pt.util.Point.DOWNLEFT);
+            if (init < next) {
+                anim = self.ANIM_DOWNLEFT;
+                init = next;
+            }
+
+            /** check for right **/
+            next = forward.dot(pt.util.Point.DOWNRIGHT);
+            if (init < next) {
+                anim = self.ANIM_DOWNRIGHT;
+                init = next;
+            }
+
+            next = forward.dot(pt.util.Point.RIGHT);
+            if (init < next) {
+                anim = self.ANIM_RIGHT;
+                init = next;
+            }
+
+            next = forward.dot(pt.util.Point.UPRIGHT);
+            if (init < next) {
+                anim = self.ANIM_UPRIGHT;
+                init = next;
+            }
+
+            return anim;
+        }
     }
 }

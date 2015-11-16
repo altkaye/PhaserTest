@@ -1,9 +1,7 @@
 ///<reference path="../phaser/typescript/phaser.d.ts"/>
-///<reference path="object/map.ts" />
-///<reference path="model/mapdata.ts" />
+///<reference path="sprite/maplayersprite.ts" />
 ///<reference path="sprite/charactersprite.ts" />
 ///<reference path="sprite/panelsprite.ts" />
-///<reference path="util/phaserutil.ts" />
 
 class MyGameState extends Phaser.State {
     private cursol: Phaser.CursorKeys;
@@ -28,10 +26,8 @@ class MyGameState extends Phaser.State {
        // console.log(m);
        // console.log(m.Chipsets);
 
-        var map = new pt.object.Map(this.game, pt.model.buildSampleMapData());
-        this.world.addChild(map);
-        map.position.setTo(map.Center.x, map.Center.y);
-
+        var sample3 : Phaser.Sprite = new pt.sprite.MapLayerSprite(this.game, pt.model.buildSampleMapLayer());
+        this.world.addChild(sample3);
         //testing objects and nest
         var sample: Phaser.Sprite = this.game.add.sprite(320, 240, "enemy");
         sample.anchor.setTo(0.5, 0.5);
@@ -45,16 +41,8 @@ class MyGameState extends Phaser.State {
         sample4.animations.play(pt.sprite.CharacterSprite.ANIM_UPLEFT);
 
         var panel :Phaser.Sprite = new pt.sprite.PanelSprite(this.game, 300, 300, 100, 60, "panel");
-        sample.addChild(panel);
-        panel.anchor.setTo(0.5, 0.5);
-        panel.inputEnabled = true;
-        panel.events.onInputDown.add((s, p) => {
-            var pointer:Phaser.Pointer = p;
-            console.log(s);
-            //sample.removeChild(panel);
-            console.log(pt.util.worldToLocal(pointer.worldX, pointer.worldY, panel));
-            panel.worldPosition.set(pointer.worldX, pointer.worldY);
-        });
+        this.world.addChild(panel);
+
     }
 
     public update(): void {

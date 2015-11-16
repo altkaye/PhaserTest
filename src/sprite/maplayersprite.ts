@@ -6,6 +6,8 @@ module pt.sprite {
 
         constructor(game: Phaser.Game, data: pt.model.MapLayerData) {
             super(game, 0, 0, this.build(game, data));
+            this.anchor.set(0.5, 0.5);
+            this.position.setTo(data.getWidth() / 2, data.getHeight() / 2);
         }
 
         private build(game: Phaser.Game, data: pt.model.MapLayerData): PIXI.Texture {

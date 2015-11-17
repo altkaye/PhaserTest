@@ -26,9 +26,15 @@ module pt.object {
                 x = Math.floor(x);
                 y = Math.floor(y);
             }
-            console.log("addtile:" + this.data.addTile(id, x, y, chipset, passability));
-            this.rebuild(this.data);//TODO
-            //this.drawTile(this.game, x, y, this.data);
+            this.data.addTile(id, x, y, chipset, passability);
+
+            //this.rebuild(this.data);//TODO
+            for (var dx = -1; dx <= 1; dx++) {
+                for (var dy = -1; dy <=1; dy++) {
+                    this.drawTile(this.game, dx + x, dy + y, this.data, false);
+                }
+            }
+            this.updateTexture();
             //this.texture.requiresUpdate = true;
         }
     }

@@ -43,10 +43,17 @@ module pt.sprite {
             this.animations.add(self.ANIM_UPRIGHT, [21, 22, 23, 22], freq, true);
         }
 
+        public updateAnimation(forward = pt.util.Point.DOWN) :void{
+            var anim = this.getWalkAnimation(forward);
+            if (this.animations.currentAnim.name !== anim) {
+                this.animations.play(anim);
+            }
+        }
+
         public getWalkAnimation(forward = pt.util.Point.DOWN) :string {
             var self = pt.sprite.CharacterSprite;
             var anim = self.ANIM_DOWN;
-            
+
             /** set down first**/
             var init = forward.dot(pt.util.Point.DOWN);
             var next = 0;

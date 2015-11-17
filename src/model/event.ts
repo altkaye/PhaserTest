@@ -10,15 +10,29 @@ module pt.model {
             this.onUpdate = onUpdate;
         }
 
+        public callOnCreate(parent) {
+            if (this.onCreate) {
+                this.onCreate(parent);
+            }
+        }
+
         public callOnFire(from, parent?) {
-            this.onFire(from, parent);
+            if (this.onFire) {
+                this.onFire(from, parent);
+            }
+        }
+
+        public callOnUpdate(parent) {
+            if (this.onUpdate) {
+                this.onUpdate(parent);
+            }
         }
 
         public toJSON() {
             return {
-                onUpdate:　"" + this.onUpdate,
-                onCreate: "" + this.onCreate,
-                onFire: "" + this.onFire
+                onUpdate:　this.onUpdate ? "" + this.onUpdate : null,
+                onCreate: this.onCreate ? "" + this.onCreate : null,
+                onFire: this.onFire ? "" + this.onFire : null
             }
         }
 

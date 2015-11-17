@@ -15,6 +15,7 @@ class MyGameState extends Phaser.State {
         this.load.image("m_town", "img/MapChip/nekura1/m_town.png");
         this.load.image("t_town02", "img/MapChip/nekura1/t_town02.png");
         this.load.image("chara", "img/CharaChip/16_hero1.png");
+        this.load.image("02_town2", "img/CharaChip/02_town2.png");
         this.load.image("panel", "img/Panel/pipo-WindowBase006.png")
         this.game.time.advancedTiming = true;
     }
@@ -27,7 +28,7 @@ class MyGameState extends Phaser.State {
         //alert("here is create");
        // console.log(m);
        // console.log(m.Chipsets);
-        var data = pt.model.buildSampleMapData(30, 30);
+        var data = pt.model.buildSampleMapData(300, 300);
 
         var json = JSON.parse(JSON.stringify(data));
         console.log(json);
@@ -70,10 +71,10 @@ class MyGameState extends Phaser.State {
             panel.worldPosition.set(pointer.worldX, pointer.worldY);
         });
 
-        var sample4 = new pt.object.Character(this.game, "chara");
+        var sample4 = new pt.object.GameObject(this.game, pt.model.buildSampleObj());
         map.getLayer(0).addChild(sample4);
         console.log(sample4);
-        sample4.position.setTo(200, 30);
+        //sample4.position.setTo(200, 30);
        // map.removeChild(sample4, true);
     }
 

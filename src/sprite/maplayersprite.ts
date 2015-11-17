@@ -9,31 +9,38 @@ module pt.sprite {
             super(game, 0, 0, this.build(game, data));
         }
 
-        public rebuild(data:pt.model.MapLayerData) {
+        public rebuild(data: pt.model.MapLayerData) {
             this.texture.destroy(true);
             this.setTexture(this.build(this.game, data));
         }
 
+        public updateTexture(canvas = this.canvas) {
+            if (this.texture) {
+                this.texture.destroy(true);
+            }
+            this.setTexture(PIXI.Texture.fromCanvas(canvas));
+        }
+
         private build(game: Phaser.Game, data: pt.model.MapLayerData): PIXI.Texture {
             var canvas = PIXI.CanvasPool.create(<any>this, data.getWidth(), data.getHeight());//TODO must be bug of pixi.d.ts. parent is not HTMLElement actually
-            var context = canvas.getContext("2d");
+            //   var context = canvas.getContext("2d");
             //console.log(data);
             for (var x = 0; x < data.Column; x++) {
                 for (var y = 0; y < data.Row; y++) {
-                    this.drawTile(game, x, y, data, context);
+                    this.drawTile(game, x, y, data, false, canvas);
                 }
             }
-            this.context = context;
+            //  this.context = context;
             this.canvas = canvas;
-            return new PIXI.Texture(new PIXI.BaseTexture(canvas, PIXI.scaleModes.DEFAULT));
+            return PIXI.Texture.fromCanvas(canvas);
         }
 
-        public drawTile(game: Phaser.Game, x: number, y: number, data: pt.model.MapLayerData, context: CanvasRenderingContext2D = this.context) {
+        public drawTile(game: Phaser.Game, x: number, y: number, data: pt.model.MapLayerData, updateTexture = false, canvas: HTMLCanvasElement = this.canvas) {
             var tile = data.getTile(x, y);
             if (!tile.equals(pt.model.Tile.EMPTY)) {
                 var chipset = data.getChipSetOf(tile);
                 var image = game.cache.getImage(chipset.Key, true);
-
+                var context = canvas.getContext("2d");
                 switch (chipset.Type) {
                     case pt.model.ChipSetType.DEFAULT:
                         this.drawDefaultTile(image.data, context, tile.Id, chipset.Size, x, y);
@@ -42,6 +49,10 @@ module pt.sprite {
                         this.drawAutoTile(image.data, context, tile, chipset.Size, x, y, data);
                         break;
                 }
+            }
+
+            if (updateTexture) {
+                this.updateTexture();
             }
         }
 

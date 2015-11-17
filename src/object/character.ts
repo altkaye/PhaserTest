@@ -10,7 +10,7 @@ module pt.object {
         constructor(game:Phaser.Game, key:string) {
             super(game);
             this.sprite = new pt.sprite.CharacterSprite(game, 0, 0, key);
-            this.key = key;
+            this.imageKey = key;
             this.sprite.anchor.setTo(0.5, 0.5);
             this.addChild(this.sprite);
             this.forward = pt.util.Point.DOWN;

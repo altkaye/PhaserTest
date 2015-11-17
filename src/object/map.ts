@@ -12,12 +12,13 @@ module pt.object {
             this.name = data.Name;
         }
 
+        /**
         public addChild(o) {
             if (o.layer) {
                 o.layer = this.data.Name;
             }
             return super.addChild(o);
-        }
+        }**/
 
         public addTile(id: number, x: number, y: number, chipset?: string | pt.model.ChipSet, passability?: pt.model.Passability, floor:boolean = true) {
             //console.log("addtile");

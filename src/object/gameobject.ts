@@ -7,7 +7,8 @@
 module pt.object {
     export class GameObject extends Phaser.Sprite {
         protected id:string;
-        protected objectName:string;
+        //protected name:string;
+        //protected objectName:string;
         protected forward:Phaser.Point;
         protected imageKey:string;
         protected event:pt.model.Event;

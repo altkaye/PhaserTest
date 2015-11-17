@@ -5,9 +5,18 @@
 module pt.object {
     export class MapLayer extends pt.sprite.MapLayerSprite {
         private data: pt.model.MapLayerData;
+
         constructor(game: Phaser.Game, data: pt.model.MapLayerData) {
             super(game, data);
             this.data = data;
+            this.name = data.Name;
+        }
+
+        public addChild(o) {
+            if (o.layer) {
+                o.layer = this.data.Name;
+            }
+            return super.addChild(o);
         }
 
         public addTile(id: number, x: number, y: number, chipset?: string | pt.model.ChipSet, passability?: pt.model.Passability, floor:boolean = true) {
@@ -40,6 +49,50 @@ module pt.object {
 
         get Center(): Phaser.Point {
             return new Phaser.Point(this.Width / 2, this.Height / 2);
+        }
+
+        public getLayer(n : string | number):MapLayer {
+            var ret;
+            if (typeof n === "string") {
+                this.layers.forEach((l)=> {
+                    if (l.name === n) {
+                        ret = l;
+                    }
+                });
+            } else {
+                if (n < this.layers.length) {
+                    ret = this.layers[n];
+                }
+            }
+            return ret;
+        }
+
+        public addChildInLayer(o, layer : string | number = 0) {
+            var l = this.getLayer(layer);
+            if (l) {
+                return l.addChild(o);
+            } else {
+                return null;
+            }
+        }
+
+        public removeChild(o, searchLayers = true) {
+            if (!searchLayers) {
+                return super.removeChild(o);
+            }
+
+            var index = this.children.indexOf(o);
+            if (index >= 0) {
+                return this.removeChildAt(o);
+            } else {
+                var ret;
+                this.layers.forEach((l) => {
+                    if (l.children.indexOf(o) >= 0) {
+                        ret = l.removeChild(o);
+                    }
+                });
+                return ret;
+            }
         }
 
         constructor(game: Phaser.Game, data: pt.model.MapData) {

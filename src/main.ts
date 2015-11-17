@@ -71,8 +71,10 @@ class MyGameState extends Phaser.State {
         });
 
         var sample4 = new pt.object.Character(this.game, "chara");
-        this.world.addChild(sample4)
+        map.getLayer(0).addChild(sample4);
+        console.log(sample4);
         sample4.position.setTo(200, 30);
+       // map.removeChild(sample4, true);
     }
 
     public update(): void {

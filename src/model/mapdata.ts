@@ -73,6 +73,9 @@ module pt.model {
         get Chipsets(): Array<ChipSet> {
             return this.chipsets;
         }
+        get Name() :string {
+            return this.name;
+        }
 
         public static fromJSON(json:any) {
             var chipsets = [];

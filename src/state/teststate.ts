@@ -82,8 +82,10 @@ module pt.state {
             map.getLayer(0).addChild(sample4);
             console.log(sample4);
 
-            var move:pt.model.MoveEvent = new pt.model.MoveEvent();
+            var move:pt.model.Event = new pt.model.MoveEvent();
             this.move = move;
+            console.log(move.toJSON());
+            move = pt.model.Event.fromJSON(move.toJSON());
             sample4.addEvent(move);
             var b = -1;
             var moveArg = pt.model.MoveEvent.buildArg(sample4.position.x, sample.position.y, 64);

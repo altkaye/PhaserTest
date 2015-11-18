@@ -73,9 +73,9 @@ module pt.model {
 
         public toJSON() {
             return {
-                onUpdate: this.onUpdate ? "" + this.onUpdate : null,
-                onCreate: this.onCreate ? "" + this.onCreate : null,
-                onFire: this.onFire ? "" + this.onFire : null,
+                onUpdate: this.onUpdate ? "(" + this.onUpdate + ")" : null,
+                onCreate: this.onCreate ? "(" + this.onCreate + ")": null,
+                onFire: this.onFire ? "(" + this.onFire + ")" : null,
                 cache: this.cache
             }
         }
@@ -84,7 +84,6 @@ module pt.model {
             var f = eval(json.onFire);
             var c = eval(json.onCreate);
             var u = eval(json.onUpdate);
-            var d = eval(json.onDone);
             return new Event(f, c, u, json.cache);
         }
     }

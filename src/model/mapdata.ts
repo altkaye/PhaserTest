@@ -1,3 +1,5 @@
+///<reference path="object.ts"/>
+
 module pt.model {
     export function buildSampleMapData(col = 5, row = 5): MapData {
         var map = new MapData(0, "sample map", col, row);
@@ -207,22 +209,42 @@ module pt.model {
             return ret;
         }
 
+        public toJSON() {
+            var ret = {
+                id:this.id,
+                name:this.name,
+                column:this.column,
+                row:this.row,
+                layers:this.layers,
+                gameObjects:[]
+            }
+            this.gameObjects.forEach((o) => {
+                ret.gameObjects.push(o.toJSON());
+            })
+            return ret;
+        }
+
         public static fromJSON(json:any):MapData {
             var layers = [];
             json.layers.forEach((l) => {
                 layers.push(MapLayerData.fromJSON(l));
             });
-            var ret = new MapData(json.id, json.name, json.column, json.row, layers);
+            var objs = [];
+            json.gameObjects.forEach((o) => {
+                objs.push(GameObjectData.fromJSON(o));
+            })
+            var ret = new MapData(json.id, json.name, json.column, json.row, layers, objs);
             return ret;
         }
 
-        constructor(id: number, name: string, column: number, row: number, layers: Array<MapLayerData> = []) {
+        constructor(id: number, name: string, column: number, row: number, layers: Array<MapLayerData> = [], objects = []) {
             this.id = id;
             this.name = name;
             this.column = column;
             this.row = row;
 
             this.layers = layers;
+            this.gameObjects = objects;
         }
 
 

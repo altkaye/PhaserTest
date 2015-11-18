@@ -185,6 +185,7 @@ module pt.model {
         private column: number;
         private row: number;
         private layers: Array<MapLayerData>;
+        private gameObjects: Array<GameObjectData>;
 
         /**
          * get all ChipSet used in this map

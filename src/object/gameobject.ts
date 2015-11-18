@@ -47,6 +47,8 @@ module pt.object {
                 this.sprite = new Phaser.Sprite(game, 0, 0, key);
             } else if (imageType === pt.model.ImageType.SPRITESHEET) {
                 this.sprite = new Phaser.Sprite(game, 0, 0, key, frame);
+            }　else {
+                return;
             }
 
             this.addChild(this.sprite);

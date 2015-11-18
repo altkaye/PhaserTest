@@ -131,10 +131,5 @@ module pt.sprite {
             }
             context.drawImage(image, src.x, src.y, src.w, src.h, dst.x, dst.y, dst.w, dst.h);
         }
-
-        public update(): void {
-            //console.log("update");
-        }
-
     }
 }

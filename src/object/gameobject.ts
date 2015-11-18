@@ -30,10 +30,6 @@ module pt.object {
             return this.cache;
         }
 
-        get GameEvents() {
-            return this.gameEvents;
-        }
-
         constructor(game:Phaser.Game, data:pt.model.GameObjectData = pt.model.GameObjectData.EMPTY()) {
             super(game);
             this.id = data.id;
@@ -57,6 +53,13 @@ module pt.object {
             }
         }
 
+        public addEvent(ev:pt.model.Event) :pt.model.Event {
+            this.gameEvents.push(ev);
+            ev.callOnCreate(this);
+
+            return ev;
+        }
+
         private updateSprite(game:Phaser.Game = this.game, key:string = this.imageKey, imageType:pt.model.ImageType = this.imageType, frame = this.frame) {
             if (this.sprite && this.children.indexOf(this.sprite) >= 0) {
                 this.removeChild(this.sprite);
@@ -78,8 +81,9 @@ module pt.object {
             this.sprite.anchor.set(0.5, 0.5);
         }
 
-        public update():void {
+        public update() {
             super.update();
+            //console.log("update");
             this.gameEvents.forEach((e) => {
                 e.callOnUpdate(this);
             });

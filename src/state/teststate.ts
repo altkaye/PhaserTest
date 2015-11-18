@@ -1,14 +1,18 @@
 ///<reference path="../../phaser/typescript/phaser.d.ts"/>
 ///<reference path="../object/map.ts" />
 ///<reference path="../model/mapdata.ts" />
+///<reference path="../model/moveevent.ts" />
 ///<reference path="../sprite/charactersprite.ts" />
 ///<reference path="../sprite/panelsprite.ts" />
 ///<reference path="../object/gameobject.ts"/>
 ///<reference path="../util/phaserutil.ts" />
 
 module pt.state {
-    export class TitleState extends Phaser.State {
+    export class TestState extends Phaser.State {
         private cursol: Phaser.CursorKeys;
+
+        private move;
+        private sp;
 
         public preload(): void {
             this.load.image("enemy", "img/Enemy/pipo-enemy001.png");
@@ -29,7 +33,7 @@ module pt.state {
             //alert("here is create");
             // console.log(m);
             // console.log(m.Chipsets);
-            var data = pt.model.buildSampleMapData(30, 30);
+            var data = pt.model.buildSampleMapData(22, 16);
 
             var json = JSON.parse(JSON.stringify(data));
             console.log(json);
@@ -40,14 +44,14 @@ module pt.state {
             //map.position.setTo(map.Center.x, map.Center.y);
             this.world.setBounds(0, 0, map.Width, map.Height);
 
-            map.Layers[0].inputEnabled = true;
-            map.Layers[0].input.priorityID = 1;
-            map.Layers[0].events.onInputDown.add((l: pt.object.MapLayer, p: Phaser.Pointer) => {
-                var local = pt.util.worldToLocal(p.worldX, p.worldY, l);
+            map.Layers[0].Sprite.inputEnabled = true;
+            map.Layers[0].Sprite.input.priorityID = 1;
+            map.Layers[0].Sprite.events.onInputDown.add((l: pt.object.MapLayer, p: Phaser.Pointer) => {
+                var local = pt.util.worldToLocal(p.worldX, p.worldY, map.Layers[0]);
                 local.x /= 32;
                 local.y /= 32;
                 console.log("map clicked:" + JSON.stringify(local));
-                l.addTile(0, local.x, local.y, new pt.model.ChipSet("t_town02", "", 32, pt.model.ChipSetType.AUTO));
+                map.Layers[0].addTile(0, local.x, local.y, new pt.model.ChipSet("t_town02", "", 32, pt.model.ChipSetType.AUTO));
             });
 
             //testing objects and nest
@@ -72,15 +76,42 @@ module pt.state {
                 panel.worldPosition.set(pointer.worldX, pointer.worldY);
             });
 
+            //sample chara
             var sample4 = new pt.object.GameObject(this.game, pt.model.buildSampleObj());
+            this.sp = sample4;
             map.getLayer(0).addChild(sample4);
             console.log(sample4);
+
+            var move:pt.model.MoveEvent = new pt.model.MoveEvent();
+            this.move = move;
+            sample4.addEvent(move);
+            var b = -1;
+            var moveArg = pt.model.MoveEvent.buildArg(sample4.position.x, sample.position.y, 64);
+            console.log(moveArg);
+
+            var callback = (e) => {
+                var nx = Math.random() * this.world.width;
+                var ny = Math.random() * this.world.height;
+                var narg = pt.model.MoveEvent.buildArg(nx, ny, 64);
+                console.log(narg);
+                e.fire(null, sample4, narg, callback);
+            };
+
+            move.fire(null, sample4, pt.model.MoveEvent.buildArg(sample4.position.x, sample4.position.y, 64), callback);
             //sample4.position.setTo(200, 30);
             // map.removeChild(sample4, true);
+
+            var sp = this.game.add.sprite(100, 100, "enemy");
+            var sp2 = new Phaser.Sprite(this.game, 10, 10, "enemy");
+            sp2.update = () => {
+                console.log("sp2 up")
+            };
+            sp.addChild(sp2);
         }
 
         public update(): void {
             //testing camera and input
+            super.update();
             if (this.cursol.up.isDown) {
                 this.game.camera.y -= 4;
             } else if (this.cursol.down.isDown) {
@@ -92,9 +123,13 @@ module pt.state {
                 this.game.camera.x += 4;
             }
         }
+
         public render(): void {
             this.game.debug.cameraInfo(this.game.camera, 0, 32);
             this.game.debug.text("fps:" + this.game.time.fps, 0, 16);
+
+            var hasDone = this.move.HasDone;
+            //this.game.debug.text(this.sp.position, 0, 200);
         }
     }
 }

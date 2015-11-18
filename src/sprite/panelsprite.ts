@@ -74,9 +74,5 @@ module pt.sprite {
                 centerX, centerY, centerW, centerH);
             return new PIXI.Texture(new PIXI.BaseTexture(canvas, PIXI.scaleModes.DEFAULT));
         }
-
-        public update(): void {
-            //console.log("update");
-        }
     }
 }

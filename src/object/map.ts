@@ -3,13 +3,20 @@
 ///<reference path="../sprite/maplayersprite.ts"/>
 
 module pt.object {
-    export class MapLayer extends pt.sprite.MapLayerSprite {
+    export class MapLayer extends Phaser.Group {
         private data: pt.model.MapLayerData;
+        private sprite: pt.sprite.MapLayerSprite;
+
+        get Sprite():pt.sprite.MapLayerSprite {
+            return this.sprite;
+        }
 
         constructor(game: Phaser.Game, data: pt.model.MapLayerData) {
-            super(game, data);
+            super(game);
             this.data = data;
             this.name = data.Name;
+            this.sprite = new pt.sprite.MapLayerSprite(game, data);
+            this.addChild(this.sprite);
         }
 
         /**
@@ -20,7 +27,7 @@ module pt.object {
             return super.addChild(o);
         }**/
 
-        public addTile(id: number, x: number, y: number, chipset?: string | pt.model.ChipSet, passability?: pt.model.Passability, floor:boolean = true) {
+        public addTile(id: number, x: number, y: number, chipset?: string | pt.model.ChipSet, passability?: pt.model.Passability, floor: boolean = true) {
             //console.log("addtile");
             if (floor) {
                 x = Math.floor(x);
@@ -30,11 +37,11 @@ module pt.object {
 
             //this.rebuild(this.data);//TODO
             for (var dx = -1; dx <= 1; dx++) {
-                for (var dy = -1; dy <=1; dy++) {
-                    this.drawTile(this.game, dx + x, dy + y, this.data, false);
+                for (var dy = -1; dy <= 1; dy++) {
+                    this.sprite.drawTile(this.game, dx + x, dy + y, this.data, false);
                 }
             }
-            this.updateTexture();
+            this.sprite.updateTexture();
             //this.texture.requiresUpdate = true;
         }
     }
@@ -58,10 +65,10 @@ module pt.object {
             return new Phaser.Point(this.Width / 2, this.Height / 2);
         }
 
-        public getLayer(n : string | number):MapLayer {
+        public getLayer(n: string | number): MapLayer {
             var ret;
             if (typeof n === "string") {
-                this.layers.forEach((l)=> {
+                this.layers.forEach((l) => {
                     if (l.name === n) {
                         ret = l;
                     }
@@ -74,7 +81,7 @@ module pt.object {
             return ret;
         }
 
-        public addChildInLayer(o, layer : string | number = 0) {
+        public addChildInLayer(o, layer: string | number = 0) {
             var l = this.getLayer(layer);
             if (l) {
                 return l.addChild(o);

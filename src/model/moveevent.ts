@@ -3,51 +3,53 @@
 
 module pt.model {
     export class MoveEvent extends pt.model.Event {
-        private to:Phaser.Point;
-        private speed:number;
-        private fixesForward:boolean;
-        private hasDone:boolean;
-
-        private onMoveDone:(moveEvent:pt.model.MoveEvent) => void;
+        private to: Phaser.Point;
+        private speed: number;
+        private fixesForward: boolean;
 
         constructor() {
-            super(this.fire, this.create, this.update);
+            super(this.begin, null, this.update);
         }
 
-        private create(parent:pt.object.GameObject) {
-            this.hasDone = true;
+        public static buildArg(toX:number, toY:number, speed = 64, fixesForward = false):{ to: { x: number, y: number }, speed: number, fixesForward: boolean } {
+            return {
+                to : {
+                    x:Math.round(toX),
+                    y:Math.round(toY)
+                },
+                speed:speed,
+                fixesForward:fixesForward
+            };
         }
 
-        private update(parent:pt.object.GameObject) {
-            if (!this.hasDone) {
-                var fps = parent.game.time.advancedTiming ? parent.game.time.fps : parent.game.time.desiredFps;
-                var fixedSpeed = this.speed / fps;
+        private update(parent: pt.object.GameObject) {
+           // console.log("move update");
+            var fps = 60;//parent.game.time.advancedTiming ? parent.game.time.fps : parent.game.time.desiredFps;
+            var fixedSpeed = this.speed / fps;
 
-                var remain = new Phaser.Point(this.to.x - parent.position.x, this.to.y - parent.position.y);
-                if (remain.getMagnitude() <= fixedSpeed) {
-                    parent.position.setTo(this.to.x, this.to.y);
-                    this.hasDone = true;
-                } else {
-                    var d = remain.setMagnitude(this.speed);
-                    parent.position.add(d.x, d.y);
-                }
+            var remain = new Phaser.Point(this.to.x - parent.position.x, this.to.y - parent.position.y);
+            if (remain.getMagnitude() < fixedSpeed) {
+                console.log("move end");
+                parent.position.setTo(this.to.x, this.to.y);
+                this.done();
+            } else {
+                var d = remain.setMagnitude(fixedSpeed);
+                parent.position.add(d.x, d.y);
             }
         }
 
         /**
          * speed is pixel/sec
          */
-        private fire(from:pt.object.GameObject, parent:pt.object.GameObject, args :{to:{x:number, y:number}, speed:number, fixesForward?:boolean, onMoveDone?:(moveEvent:pt.model.MoveEvent) => void}) {
+        private begin(from: pt.object.GameObject, parent: pt.object.GameObject, args: { to: { x: number, y: number }, speed: number, fixesForward?: boolean }) {
+            console.log("move begin");
             this.to = new Phaser.Point(args.to.x, args.to.y);
             this.speed = args.speed;
             this.fixesForward = args.fixesForward;
-            this.onMoveDone = args.onMoveDone;
-            this.hasDone = false;
             if (!this.fixesForward) {
                 var direction = new Phaser.Point(this.to.x - parent.position.x, this.to.y - parent.position.y).normalize();
                 parent.updateForward(direction);
             }
-
         }
     }
 }

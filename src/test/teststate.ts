@@ -21,7 +21,7 @@ module pt.test {
             this.load.image("t_town02", "img/MapChip/nekura1/t_town02.png");
             this.load.image("chara", "img/CharaChip/16_hero1.png");
             this.load.image("02_town2", "img/CharaChip/02_town2.png");
-            this.load.image("panel", "img/Panel/pipo-WindowBase006.png")
+            this.load.image("panel", "img/Panel/pipo/pipo-WindowBase006.png")
             this.game.time.advancedTiming = true;
         }
 

@@ -60,6 +60,17 @@ module pt.object {
             return ev;
         }
 
+        public hasEvent(ev:pt.model.Event) : boolean {
+            return this.gameEvents.indexOf(ev) >= 0;
+        }
+
+        public removeEvent(ev:pt.model.Event) {
+            if (this.hasEvent(ev)) {
+                this.gameEvents.splice(this.gameEvents.indexOf(ev), 1);
+            }
+            return ev;
+        }
+
         private updateSprite(game:Phaser.Game = this.game, key:string = this.imageKey, imageType:pt.model.ImageType = this.imageType, frame = this.frame) {
             if (this.sprite && this.children.indexOf(this.sprite) >= 0) {
                 this.removeChild(this.sprite);

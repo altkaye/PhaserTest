@@ -1,7 +1,8 @@
 ///<reference path="../../phaser/typescript/phaser.d.ts"/>
 ///<reference path="../object/map.ts" />
 ///<reference path="../model/mapdata.ts" />
-///<reference path="../model/moveevent.ts" />
+///<reference path="../model/move.ts" />
+///<reference path="../model/wait.ts" />
 ///<reference path="../sprite/charactersprite.ts" />
 ///<reference path="../sprite/panelsprite.ts" />
 ///<reference path="../object/gameobject.ts"/>
@@ -82,24 +83,27 @@ module pt.state {
             map.getLayer(0).addChild(sample4);
             console.log(sample4);
 
-            var move:pt.model.Event = new pt.model.MoveEvent();
+            var move:pt.model.Event = new pt.model.Move();
             this.move = move;
             console.log(move.toJSON());
             move = pt.model.Event.fromJSON(move.toJSON());
             sample4.addEvent(move);
             var b = -1;
-            var moveArg = pt.model.MoveEvent.buildArg(sample4.position.x, sample.position.y, 64);
+            var moveArg = pt.model.Move.buildArg(sample4.position.x, sample.position.y, 64);
             console.log(moveArg);
 
             var callback = (e) => {
                 var nx = Math.random() * this.world.width;
                 var ny = Math.random() * this.world.height;
-                var narg = pt.model.MoveEvent.buildArg(nx, ny, 64);
+                var narg = pt.model.Move.buildArg(nx, ny, 64);
                 console.log(narg);
-                e.fire(null, sample4, narg, callback);
+                var wait = new pt.model.Wait();
+                wait.fire(null, sample4, ()=> {
+                    e.fire(null, sample4, callback, narg);
+                }, 1);
             };
 
-            move.fire(null, sample4, pt.model.MoveEvent.buildArg(sample4.position.x, sample4.position.y, 64), callback);
+            move.fire(null, sample4, callback, pt.model.Move.buildArg(sample4.position.x, sample.position.y, 64));
             //sample4.position.setTo(200, 30);
             // map.removeChild(sample4, true);
 
@@ -108,6 +112,7 @@ module pt.state {
             sp2.update = () => {
                 console.log("sp2 up")
             };
+            //sp.events.onI
             sp.addChild(sp2);
         }
 

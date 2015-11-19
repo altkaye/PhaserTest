@@ -2,7 +2,7 @@
 ///<reference path="../../phaser/typescript/phaser.d.ts"/>
 
 module pt.model {
-    export class MoveEvent extends pt.model.Event {
+    export class Move extends pt.model.Event {
         private to: Phaser.Point;
         private speed: number;
         private fixesForward: boolean;
@@ -41,11 +41,11 @@ module pt.model {
         /**
          * speed is pixel/sec
          */
-        private begin(from: pt.object.GameObject, parent: pt.object.GameObject, args: { to: { x: number, y: number }, speed: number, fixesForward?: boolean }) {
+        private begin(from: pt.object.GameObject, parent: pt.object.GameObject, arg: { to: { x: number, y: number }, speed: number, fixesForward?: boolean }) {
             console.log("move begin");
-            this.to = new Phaser.Point(args.to.x, args.to.y);
-            this.speed = args.speed;
-            this.fixesForward = args.fixesForward;
+            this.to = new Phaser.Point(arg[0].to.x, arg[0].to.y);
+            this.speed = arg[0].speed;
+            this.fixesForward = arg[0].fixesForward;
             if (!this.fixesForward) {
                 var direction = new Phaser.Point(this.to.x - parent.position.x, this.to.y - parent.position.y).normalize();
                 parent.updateForward(direction);

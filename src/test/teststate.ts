@@ -13,9 +13,6 @@ module pt.test {
     export class TestState extends Phaser.State {
         private cursol: Phaser.CursorKeys;
 
-        private move;
-        private sp;
-
         public preload(): void {
             this.load.image("enemy", "img/Enemy/pipo-enemy001.png");
             this.load.image("enemy2", "img/Enemy/pipo-enemy002.png");
@@ -29,14 +26,56 @@ module pt.test {
 
         public create(): void {
             super.create();
-
-
             this.cursol = this.game.input.keyboard.createCursorKeys();
-            //alert("here is create");
-            // console.log(m);
-            // console.log(m.Chipsets);
-            var data = pt.model.buildSampleMapData(22, 16);
+            var map = this.testMapLoading();
+            this.testSpriteNest();
+            this.testPanel();
+            this.testGameObjAndFlow(map);
+        }
 
+        public update(): void {
+            //testing camera and input
+            super.update();
+            if (this.cursol.up.isDown) {
+                this.game.camera.y -= 4;
+            } else if (this.cursol.down.isDown) {
+                this.game.camera.y += 4;
+            }
+            if (this.cursol.left.isDown) {
+                this.game.camera.x -= 4;
+            } else if (this.cursol.right.isDown) {
+                this.game.camera.x += 4;
+            }
+        }
+
+        private testSpriteNest() {
+                        //testing objects and nest
+            var sample: Phaser.Sprite = this.game.add.sprite(320, 240, "enemy");
+            sample.anchor.setTo(0.5, 0.5);
+
+            var sample02: Phaser.Sprite = new Phaser.Sprite(this.game, 0, 0, "enemy2");
+            sample02.anchor.setTo(0.5, 0.5);
+            sample.addChild(sample02);
+            sample02.position.setTo(100, 100);
+        }
+
+        private testPanel() {
+            var panel: Phaser.Sprite = new pt.sprite.PanelSprite(this.game, 100, 100, 100, 60, "panel");
+            this.world.addChild(panel);
+            panel.anchor.setTo(0.5, 0.5);
+            panel.inputEnabled = true;
+            panel.input.priorityID = 2;
+            panel.events.onInputDown.add((s, p) => {
+                var pointer: Phaser.Pointer = p;
+                console.log(s);
+                //this.world.removeChild(panel);
+                console.log(pt.util.worldToLocal(pointer.worldX, pointer.worldY, panel));
+                panel.worldPosition.set(pointer.worldX, pointer.worldY);
+            });
+        }
+
+        private testMapLoading() {
+            var data = pt.model.buildSampleMapData(22, 16);
             var json = JSON.parse(JSON.stringify(data));
             console.log(json);
             var reverted = pt.model.MapData.fromJSON(json);
@@ -56,33 +95,19 @@ module pt.test {
                 map.Layers[0].addTile(0, local.x, local.y, new pt.model.ChipSet("t_town02", "", 32, pt.model.ChipSetType.AUTO));
             });
 
-            //testing objects and nest
-            var sample: Phaser.Sprite = this.game.add.sprite(320, 240, "enemy");
-            sample.anchor.setTo(0.5, 0.5);
+            return map;
+        }
 
-            var sample02: Phaser.Sprite = new Phaser.Sprite(this.game, 0, 0, "enemy2");
-            sample02.anchor.setTo(0.5, 0.5);
-            sample.addChild(sample02);
-            sample02.position.setTo(100, 100);
+        private testGameObjAndFlow(map:pt.object.Map) {
+            //test serialize
+            var jsonStr = JSON.stringify(pt.model.buildSampleObj().toJSON());
+            var json = JSON.parse(jsonStr);
+            var data = pt.model.GameObjectData.fromJSON(json); 
 
-            var panel: Phaser.Sprite = new pt.sprite.PanelSprite(this.game, 300, 300, 100, 60, "panel");
-            sample.addChild(panel);
-            panel.anchor.setTo(0.5, 0.5);
-            panel.inputEnabled = true;
-            panel.input.priorityID = 2;
-            panel.events.onInputDown.add((s, p) => {
-                var pointer: Phaser.Pointer = p;
-                console.log(s);
-                //sample.removeChild(panel);
-                console.log(pt.util.worldToLocal(pointer.worldX, pointer.worldY, panel));
-                panel.worldPosition.set(pointer.worldX, pointer.worldY);
-            });
-
-            //sample chara
-            var sample4 = new pt.object.GameObject(this.game, pt.model.buildSampleObj());
-            this.sp = sample4;
-            map.getLayer(0).addChild(sample4);
-            var moveArg = pt.model.Move.buildArg(sample4.position.x, sample.position.y, 64);
+            var sample4 = new pt.object.GameObject(this.game, data);
+            sample4.position.setTo(100, 100);
+            var moveArg = pt.model.Move.buildArg(sample4.position.x, sample4.position.y, 64);
+            map.addChildInLayer(sample4);
             var flow = new pt.model.EventFlow();
             flow.next(new pt.model.Move(), sample4, null, moveArg)
                 .next(new pt.model.Wait(), sample4, null, 1)
@@ -91,29 +116,6 @@ module pt.test {
                     moveArg.to.y = Math.random() * this.world.height;
                 })
                 .loop();
-
-            var sp = this.game.add.sprite(100, 100, "enemy");
-            var sp2 = new Phaser.Sprite(this.game, 10, 10, "enemy");
-            sp2.update = () => {
-                console.log("sp2 up")
-            };
-            //sp.events.onI
-            sp.addChild(sp2);
-        }
-
-        public update(): void {
-            //testing camera and input
-            super.update();
-            if (this.cursol.up.isDown) {
-                this.game.camera.y -= 4;
-            } else if (this.cursol.down.isDown) {
-                this.game.camera.y += 4;
-            }
-            if (this.cursol.left.isDown) {
-                this.game.camera.x -= 4;
-            } else if (this.cursol.right.isDown) {
-                this.game.camera.x += 4;
-            }
         }
 
         public render(): void {

@@ -32,7 +32,13 @@ module pt.model {
         }
 
         public toJSON() {
-            var ret = JSON.parse(JSON.stringify(this));
+            var ret:any = {};
+
+            for (var prop in this) {
+                if (typeof this[prop] !== "function") {
+                    ret[prop] = this[prop];
+                }
+            }
 
             ret.gameEvents = [];
             this.gameEvents.forEach((e) => {

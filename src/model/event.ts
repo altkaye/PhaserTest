@@ -104,13 +104,14 @@ module pt.model {
                 onFire: this.onFire ? Event.funcToString(this.onFire) : null,
                 cache: this.cache
             };
-
+            /**
             for (var prop in this) {
                 var spFunc = Event.isExFuncProp(prop);
                 if (spFunc && typeof this[prop] === "function") {
                     ret[prop] = Event.funcToString(this[prop]);
                 }
             }
+            **/
 
             return ret;
         }
@@ -128,12 +129,13 @@ module pt.model {
             var c = eval(json.onCreate);
             var u = eval(json.onUpdate);
             var ev = new Event(f, c, u, json.cache);
-
+            /**
             for (var prop in json) {
                 if (Event.isExFuncProp(prop)) {
                     ev[prop] = Event.funcToString(json[prop]);
                 }
             }
+            **/
 
             return ev;
         }

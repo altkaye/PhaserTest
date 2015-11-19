@@ -5,18 +5,14 @@ module pt.model {
         private event:pt.model.Event;
         private parent;
         private from;
-        private args:any;
+        private arg:any;
         private onDoneCache:any;
 
         protected next:LinkedEvent;
 
-        constructor(ev?:pt.model.Event, parent?, from?, args = []) {
+        constructor(ev?:pt.model.Event, parent?, from?, arg?) {
             this.event = ev;
-            this.args = [];
-            args.forEach((o) => {
-                this.args.push(o);
-            });
-            //this.args = args;
+            this.arg = arg;
             if (ev != null) {
                 this.onDoneCache = ev.OnDone;
             }
@@ -33,13 +29,14 @@ module pt.model {
         }
 
         public fire() {
-            console.log(this.args);
             this.event.setOnDone(
                 () => {
-                    this.onDoneCache(this.event);
+                    if (this.onDoneCache != null) {
+                        this.onDoneCache(this.event);
+                    }
                     this.next.fire();
                 }
-            ).fire(this.parent, this.from, this.args);
+            ).fire(this.parent, this.from, this.arg);
         }
     }
 
@@ -80,8 +77,8 @@ module pt.model {
             this.queue = [];
         }
 
-        public next(ev:pt.model.Event, parent?, from?, ...args):EventFlow {
-            var lev = new LinkedEvent(ev, parent, from, args);
+        public next(ev:pt.model.Event, parent?, from?, arg?):EventFlow {
+            var lev = new LinkedEvent(ev, parent, from, arg);
             return this.push(lev);
         }
 

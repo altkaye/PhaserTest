@@ -4,7 +4,7 @@ module pt.model {
     export class Event {
         protected onUpdate: (parent: pt.object.GameObject) => void;
         protected onCreate: (parent: pt.object.GameObject, args?) => void;
-        protected onFire: (parent?: pt.object.GameObject, from?: pt.object.GameObject, ...args) => void;
+        protected onFire: (parent?: pt.object.GameObject, from?: pt.object.GameObject, arg?) => void;
 
         protected onDone: (self: pt.model.Event) => void;
 
@@ -33,7 +33,7 @@ module pt.model {
          * @param onUpdate called every frame if this event is fired ,until Event#done is called
          * @cache cache is saved in user savedata
          */
-        constructor(onFire?: (parent: pt.object.GameObject, from?: pt.object.GameObject, ...args) => void, onCreate?: (parent: pt.object.GameObject, args?) => void, onUpdate?: (parent: pt.object.GameObject) => void, cache = {}) {
+        constructor(onFire?: (parent: pt.object.GameObject, from?: pt.object.GameObject, arg?) => void, onCreate?: (parent: pt.object.GameObject, args?) => void, onUpdate?: (parent: pt.object.GameObject) => void, cache = {}) {
             this.onFire = onFire;
             this.onCreate = onCreate;
             this.onUpdate = onUpdate;
@@ -47,17 +47,16 @@ module pt.model {
             return this.hasDone;
         }
 
-        public callOnCreate(parent: pt.object.GameObject, args?) {
+        public callOnCreate(parent: pt.object.GameObject, arg?) {
             if (this.onCreate != null) {
-                this.onCreate(parent, args);
+                this.onCreate(parent, arg);
             }
         }
 
         /**
          * fire event. this starts update loop until Event#done is called
          */
-        public fire(parent: pt.object.GameObject, from?: pt.object.GameObject, ...args) {
-            console.log("ev fired");
+        public fire(parent: pt.object.GameObject, from?: pt.object.GameObject, arg?) {
             this.hasDone = false;
 
             if (parent && !parent.hasEvent(this)) {
@@ -65,7 +64,7 @@ module pt.model {
             }
 
             if (this.onFire != null) {
-                this.onFire(parent, from, args);
+                this.onFire(parent, from, arg);
             }
             return this;
         }

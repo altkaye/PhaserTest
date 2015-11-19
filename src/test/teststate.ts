@@ -9,7 +9,7 @@
 ///<reference path="../object/gameobject.ts"/>
 ///<reference path="../util/phaserutil.ts" />
 
-module pt.state {
+module pt.test {
     export class TestState extends Phaser.State {
         private cursol: Phaser.CursorKeys;
 

@@ -23,13 +23,11 @@ module pt.model {
         }
 
         private update(parent: pt.object.GameObject) {
-           // console.log("move update");
             var fps = 60;//parent.game.time.advancedTiming ? parent.game.time.fps : parent.game.time.desiredFps;
             var fixedSpeed = this.speed / fps;
 
             var remain = new Phaser.Point(this.to.x - parent.position.x, this.to.y - parent.position.y);
             if (remain.getMagnitude() < fixedSpeed) {
-                console.log("move end");
                 parent.position.setTo(this.to.x, this.to.y);
                 this.done(true);
             } else {
@@ -42,10 +40,9 @@ module pt.model {
          * speed is pixel/sec
          */
         private begin(parent: pt.object.GameObject, from: pt.object.GameObject, arg: { to: { x: number, y: number }, speed: number, fixesForward?: boolean }) {
-            console.log("move begin");
-            this.to = new Phaser.Point(arg[0].to.x, arg[0].to.y);
-            this.speed = arg[0].speed;
-            this.fixesForward = arg[0].fixesForward;
+            this.to = new Phaser.Point(arg.to.x, arg.to.y);
+            this.speed = arg.speed;
+            this.fixesForward = arg.fixesForward;
             if (!this.fixesForward) {
                 var direction = new Phaser.Point(this.to.x - parent.position.x, this.to.y - parent.position.y).normalize();
                 parent.updateForward(direction);

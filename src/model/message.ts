@@ -39,8 +39,8 @@ module pt.model {
         /**
          * @param args [0] script body
          */
-        private begin(from, parent: pt.object.GameObject, ...args) {
-            this.pages = Message.splitByP(args[0]);
+        private begin(from, parent: pt.object.GameObject, arg) {
+            this.pages = Message.splitByP(arg);
             this.panel = new pt.sprite.PanelSprite(parent.game, 0, 0, 300, 50, "panel");
             this.panel.anchor.setTo(0.5, 0.5);
             var style = {

@@ -1,4 +1,7 @@
 module pt.manager {
+    /**
+     * manages which object should take input.
+     */
     export class FocusManager {
         private static stack:Array<any> = [];
 
@@ -16,7 +19,7 @@ module pt.manager {
             }
         }
 
-        public static isInputable(o:any) {
+        public static isFocused(o:any) {
             return this.stack.indexOf(o) == this.stack.length - 1;
         }
     }

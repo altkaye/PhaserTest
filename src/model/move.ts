@@ -41,7 +41,7 @@ module pt.model {
         /**
          * speed is pixel/sec
          */
-        private begin(from: pt.object.GameObject, parent: pt.object.GameObject, arg: { to: { x: number, y: number }, speed: number, fixesForward?: boolean }) {
+        private begin(parent: pt.object.GameObject, from: pt.object.GameObject, arg: { to: { x: number, y: number }, speed: number, fixesForward?: boolean }) {
             console.log("move begin");
             this.to = new Phaser.Point(arg[0].to.x, arg[0].to.y);
             this.speed = arg[0].speed;

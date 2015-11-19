@@ -15,18 +15,19 @@ module pt.model {
         }
 
         private update(parent: pt.object.GameObject) {
-            if (pt.manager.FocusManager.isInputable(this)) {
+            if (pt.manager.FocusManager.isFocused(this)) {
                 var keyDown = this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR);
                 if (keyDown) {
-                    if (!Message.next(this)) {
+                    if (!Message.nextPage(this)) {
                         this.game.world.removeChild(this.panel);
+                        pt.manager.FocusManager.remove(this);
                         this.done();
                     }
                 }
             }
         }
 
-        private static next(self):boolean {
+        private static nextPage(self):boolean {
             if (self.pages.length == 0) {
                 return false;
             } else {

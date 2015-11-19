@@ -18,7 +18,7 @@ module pt.model {
             }
         }
 
-        public begin(f, p, ...args) {
+        public begin(p, f, ...args) {
             this.waitTime = args[0];
             this.lockInput = args[1];//TODO
             this.elapsedFrame = 0;

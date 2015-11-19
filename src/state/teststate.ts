@@ -98,12 +98,12 @@ module pt.state {
                 var narg = pt.model.Move.buildArg(nx, ny, 64);
                 console.log(narg);
                 var wait = new pt.model.Wait();
-                wait.fire(null, sample4, ()=> {
-                    e.fire(null, sample4, callback, narg);
-                }, 1);
+                wait.setOnDone(()=> {
+                    e.setOnDone(callback).fire(sample4, null, narg);
+                }).fire(sample4, null, 1);
             };
 
-            move.fire(null, sample4, callback, pt.model.Move.buildArg(sample4.position.x, sample.position.y, 64));
+            move.setOnDone(callback).fire(sample4, null, pt.model.Move.buildArg(sample4.position.x, sample.position.y, 64));
             //sample4.position.setTo(200, 30);
             // map.removeChild(sample4, true);
 

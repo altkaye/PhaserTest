@@ -4,7 +4,7 @@ module pt.model {
     export class Event {
         protected onUpdate: (parent: pt.object.GameObject) => void;
         protected onCreate: (parent: pt.object.GameObject, args?) => void;
-        protected onFire: (from: pt.object.GameObject, parent?: pt.object.GameObject, ...args) => void;
+        protected onFire: (parent?: pt.object.GameObject, from?: pt.object.GameObject, ...args) => void;
 
         protected onDone: (self: pt.model.Event) => void;
 
@@ -16,6 +16,16 @@ module pt.model {
         private hasDone:boolean;
         private currentParent: pt.object.GameObject;
 
+
+        get OnDone() {
+            return this.onDone;
+        }
+
+        public setOnDone(v) {
+            this.onDone = v;
+            return this;
+        }
+
         /**
          *
          * @param onFire when Event#fire is called
@@ -23,7 +33,7 @@ module pt.model {
          * @param onUpdate called every frame if this event is fired ,until Event#done is called
          * @cache cache is saved in user savedata
          */
-        constructor(onFire?: (from: pt.object.GameObject, parent?: pt.object.GameObject, ...args) => void, onCreate?: (parent: pt.object.GameObject, args?) => void, onUpdate?: (parent: pt.object.GameObject) => void, cache = {}) {
+        constructor(onFire?: (parent: pt.object.GameObject, from?: pt.object.GameObject, ...args) => void, onCreate?: (parent: pt.object.GameObject, args?) => void, onUpdate?: (parent: pt.object.GameObject) => void, cache = {}) {
             this.onFire = onFire;
             this.onCreate = onCreate;
             this.onUpdate = onUpdate;
@@ -46,7 +56,7 @@ module pt.model {
         /**
          * fire event. this starts update loop until Event#done is called
          */
-        public fire(from: pt.object.GameObject, parent?: pt.object.GameObject, onDone?, ...args) {
+        public fire(parent: pt.object.GameObject, from?: pt.object.GameObject, ...args) {
             console.log("ev fired");
             this.hasDone = false;
 
@@ -55,10 +65,9 @@ module pt.model {
             }
 
             if (this.onFire != null) {
-                this.onFire(from, parent, args);
+                this.onFire(parent, from, args);
             }
-
-            this.onDone = onDone;
+            return this;
         }
 
         private destroy() {
@@ -83,6 +92,7 @@ module pt.model {
             if (this.onDone != null) {
                 this.onDone(this);
             }
+
             if (destroy) {
                 this.destroy();
             }

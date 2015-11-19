@@ -3,6 +3,7 @@
 ///<reference path="../model/mapdata.ts" />
 ///<reference path="../model/move.ts" />
 ///<reference path="../model/wait.ts" />
+///<reference path="../model/eventflow.ts" />
 ///<reference path="../sprite/charactersprite.ts" />
 ///<reference path="../sprite/panelsprite.ts" />
 ///<reference path="../object/gameobject.ts"/>
@@ -81,31 +82,15 @@ module pt.state {
             var sample4 = new pt.object.GameObject(this.game, pt.model.buildSampleObj());
             this.sp = sample4;
             map.getLayer(0).addChild(sample4);
-            console.log(sample4);
-
-            var move:pt.model.Event = new pt.model.Move();
-            this.move = move;
-            console.log(move.toJSON());
-            move = pt.model.Event.fromJSON(move.toJSON());
-            sample4.addEvent(move);
-            var b = -1;
             var moveArg = pt.model.Move.buildArg(sample4.position.x, sample.position.y, 64);
-            console.log(moveArg);
-
-            var callback = (e) => {
-                var nx = Math.random() * this.world.width;
-                var ny = Math.random() * this.world.height;
-                var narg = pt.model.Move.buildArg(nx, ny, 64);
-                console.log(narg);
-                var wait = new pt.model.Wait();
-                wait.setOnDone(()=> {
-                    e.setOnDone(callback).fire(sample4, null, narg);
-                }).fire(sample4, null, 1);
-            };
-
-            move.setOnDone(callback).fire(sample4, null, pt.model.Move.buildArg(sample4.position.x, sample.position.y, 64));
-            //sample4.position.setTo(200, 30);
-            // map.removeChild(sample4, true);
+            var flow = new pt.model.EventFlow();
+            flow.next(new pt.model.Move(), sample4, null, moveArg)
+                .next(new pt.model.Wait(), sample4, null, 1)
+                .then(() => {
+                    moveArg.to.x = Math.random() * this.world.width;
+                    moveArg.to.y = Math.random() * this.world.height;
+                })
+                .loop();
 
             var sp = this.game.add.sprite(100, 100, "enemy");
             var sp2 = new Phaser.Sprite(this.game, 10, 10, "enemy");
@@ -134,9 +119,6 @@ module pt.state {
         public render(): void {
             this.game.debug.cameraInfo(this.game.camera, 0, 32);
             this.game.debug.text("fps:" + this.game.time.fps, 0, 16);
-
-            var hasDone = this.move.HasDone;
-            //this.game.debug.text(this.sp.position, 0, 200);
         }
     }
 }

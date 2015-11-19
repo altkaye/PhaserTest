@@ -31,7 +31,7 @@ module pt.model {
             if (remain.getMagnitude() < fixedSpeed) {
                 console.log("move end");
                 parent.position.setTo(this.to.x, this.to.y);
-                this.done();
+                this.done(true);
             } else {
                 var d = remain.setMagnitude(fixedSpeed);
                 parent.position.add(d.x, d.y);

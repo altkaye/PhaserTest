@@ -1,53 +1,31 @@
 ///<reference path="event.ts"/>
 module pt.model {
 
-    export class EventFlow {
-        private index :number;
-        private queue:Array<LinkedEvent>;
-
-        constructor() {
-            this.index = 0;
-            this.queue = [];
-        }
-
-        public next(ev:pt.model.Event, parent?, from?, ...args):EventFlow {
-            var lev = new LinkedEvent(ev,parent, from, args);
-            this.last.setNext(lev);
-            this.queue.push(lev);
-            return this;
-        }
-
-        public then(func) {
-            //todo
-            return this;
-        }
-
-        get last:LinkedEvent {
-            return this.queue[this.queue.length - 1];
-        }
-
-        public begin() {
-            this.qu
-            this.queue[0].fire();
-            return this;
-        }
-    }
-
-    class LinkedEvent {
+    export class LinkedEvent {
         private event:pt.model.Event;
         private parent;
         private from;
         private args:any;
         private onDoneCache:any;
 
-        private next:LinkedEvent;
+        protected next:LinkedEvent;
 
-        constructor(ev:pt.model.Event, parent, from, ...args) {
+        constructor(ev?:pt.model.Event, parent?, from?, args = []) {
             this.event = ev;
-            this.args = args;
-            this.onDoneCache = ev.OnDone;
+            this.args = [];
+            args.forEach((o) => {
+                this.args.push(o);
+            });
+            //this.args = args;
+            if (ev != null) {
+                this.onDoneCache = ev.OnDone;
+            }
             this.parent = parent;
             this.from = from;
+        }
+
+        public hasNext() {
+            return this.next != null;
         }
 
         public setNext(e:LinkedEvent) {
@@ -55,12 +33,93 @@ module pt.model {
         }
 
         public fire() {
+            console.log(this.args);
             this.event.setOnDone(
                 () => {
                     this.onDoneCache(this.event);
                     this.next.fire();
                 }
             ).fire(this.parent, this.from, this.args);
+        }
+    }
+
+    class Then extends LinkedEvent {
+        private func:() => void;
+        constructor(func:() => void = () => {}) {
+            super(null, null, null);
+            this.func = func;
+        }
+
+        public fire() {
+            this.func();
+            if (this.next != null) {
+                this.next.fire();
+            }
+        }
+    }
+
+    class EndIf extends LinkedEvent {
+        private func:() => boolean;
+
+        constructor(f) {
+            super(null, null, null);
+            this.func = f;
+        }
+
+        public fire() {
+            if (this.func() && this.next != null) {
+                this.next.fire();
+            }
+        }
+    }
+
+    export class EventFlow {
+        private queue:Array<LinkedEvent>;
+
+        constructor() {
+            this.queue = [];
+        }
+
+        public next(ev:pt.model.Event, parent?, from?, ...args):EventFlow {
+            var lev = new LinkedEvent(ev, parent, from, args);
+            return this.push(lev);
+        }
+
+        public push(le:LinkedEvent) {
+            if (this.queue.length != 0) {
+                this.last.setNext(le);
+            }
+            this.queue.push(le);
+            return this;
+        }
+
+        public then(func:() => void) {
+            var t = new Then(func);
+            return this.push(t);
+        }
+
+        public endIf(func:() => boolean) {
+            var ei = new EndIf(func);
+            return this.push(ei);
+        }
+
+        get last():LinkedEvent {
+            return this.queue[this.queue.length - 1];
+        }
+
+        public loop() {
+            this.then(() => {
+                this.queue[0].fire();
+            }).begin();
+            return this;
+        }
+
+        public begin() {
+            if (!this.last.hasNext()) {
+                this.last.setNext(new Then());
+            }
+            this.queue[0].fire();
+            return this;
         }
     }
 }

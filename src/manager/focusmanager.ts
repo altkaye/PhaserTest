@@ -12,7 +12,7 @@ module pt.manager {
 
         public static remove(o:any) {
             var i = this.stack.indexOf(o);
-            if (this.stack.indexOf(o) >= 0) {
+            if (i >= 0) {
                 return this.stack.splice(i, 1);
             } else {
                 return o;
@@ -20,7 +20,7 @@ module pt.manager {
         }
 
         public static isFocused(o:any) {
-            return this.stack.indexOf(o) == this.stack.length - 1;
+            return this.stack.indexOf(o) >= 0 && this.stack.indexOf(o) == this.stack.length - 1;
         }
     }
 }

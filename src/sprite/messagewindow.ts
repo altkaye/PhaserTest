@@ -10,12 +10,17 @@ module pt.sprite {
 
         private onClose: (self: MessageWindow) => void;
 
-        private enterKey:Phaser.Key;
+        private enterKey: Phaser.Key;
+
+        private isOpened: boolean;
+        get IsOpened() {
+            return this.isOpened;
+        }
 
         constructor(game: Phaser.Game, key: string) {
             super(game);
             this.imageKey = key;
-
+            this.isOpened = false;
             this.enterKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         }
 
@@ -25,19 +30,24 @@ module pt.sprite {
             }
         }
 
+        public addToStage(x = this.game.width / 2, y = this.game.width * 2 / 3) {
+            this.position.setTo(x, y);
+            this.stage.addChild(this);
+        }
+
         private onEnterKeyDown() {
             if (pt.manager.FocusManager.isFocused(this)) {
                 if (!this.nextPage()) {
-                    pt.manager.FocusManager.remove(this);
                     this.close();
                 }
             }
         }
 
         public close() {
+            pt.manager.FocusManager.remove(this);
             this.removeChild(this.panel);
             this.removeChild(this.text);
-
+            this.isOpened = false;
             if (this.onClose != null) {
                 this.onClose(this);
             }
@@ -60,7 +70,7 @@ module pt.sprite {
         /**
         * @param src script body
         */
-        public open(src: string, requestFocus = true) {
+        public open(src: string, requestFocus = true, addToStage = true) {
             this.pages = MessageWindow.splitByP(src);
             this.panel = new pt.sprite.PanelSprite(this.game, 0, 0, 300, 50, this.imageKey);
             this.panel.anchor.setTo(0.5, 0.5);
@@ -76,6 +86,10 @@ module pt.sprite {
 
             this.addChild(this.panel);
             this.addChild(this.text);
+            this.isOpened = true;
+            if (addToStage) {
+                this.addToStage();
+            }
             if (requestFocus) {
                 pt.manager.FocusManager.request(this);
             }
@@ -83,11 +97,11 @@ module pt.sprite {
 
         //TODO temp implementation
         private static splitByP(script: string) {
-            var ret :Array<string>= [];
+            var ret: Array<string> = [];
             var pages = script.split("</p>");//TODO use regex or DOMParser
             pages.forEach((str) => {
-                str = str.replace("<p>", "");
-                if (str.trim() !== "") {
+                str = str.trim().replace("<p>", "");
+                if (str !== "") {
                     ret.push(str);
                 }
             });

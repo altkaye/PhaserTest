@@ -55,9 +55,6 @@ module pt.test {
             win.setOnClose((m) => {
                 console.log("mes closed");
             });
-            win.position.setTo(this.game.width / 2, this.game.width * 2 /3);
-
-            this.stage.addChild(win);
             win.open("<p>space to next</p><p>hello world</p>");
         }
 

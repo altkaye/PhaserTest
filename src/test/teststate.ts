@@ -6,6 +6,7 @@
 ///<reference path="../model/eventflow.ts" />
 ///<reference path="../sprite/charactersprite.ts" />
 ///<reference path="../sprite/panelsprite.ts" />
+///<reference path="../sprite/messagewindow.ts" />
 ///<reference path="../object/gameobject.ts"/>
 ///<reference path="../util/phaserutil.ts" />
 
@@ -31,6 +32,7 @@ module pt.test {
             this.testSpriteNest();
             this.testPanel();
             this.testGameObjAndFlow(map);
+            this.testMessageWindow();
         }
 
         public update(): void {
@@ -48,8 +50,19 @@ module pt.test {
             }
         }
 
+        private testMessageWindow() {
+            var win = new pt.sprite.MessageWindow(this.game, "panel");
+            win.setOnClose((m) => {
+                console.log("mes closed");
+            });
+            win.position.setTo(this.game.width / 2, this.game.width * 2 /3);
+
+            this.stage.addChild(win);
+            win.open("<p>space to next</p><p>hello world</p>");
+        }
+
         private testSpriteNest() {
-                        //testing objects and nest
+            //testing objects and nest
             var sample: Phaser.Sprite = this.game.add.sprite(320, 240, "enemy");
             sample.anchor.setTo(0.5, 0.5);
 
@@ -98,11 +111,11 @@ module pt.test {
             return map;
         }
 
-        private testGameObjAndFlow(map:pt.object.Map) {
+        private testGameObjAndFlow(map: pt.object.Map) {
             //test serialize
             var jsonStr = JSON.stringify(pt.model.buildSampleObj().toJSON());
             var json = JSON.parse(jsonStr);
-            var data = pt.model.GameObjectData.fromJSON(json); 
+            var data = pt.model.GameObjectData.fromJSON(json);
 
             var sample4 = new pt.object.GameObject(this.game, data);
             sample4.position.setTo(100, 100);

@@ -11,14 +11,14 @@ module pt.model {
             super(this.begin, null, this.update);
         }
 
-        public static buildArg(toX:number, toY:number, speed = 64, fixesForward = false):{ to: { x: number, y: number }, speed: number, fixesForward: boolean } {
+        public static buildArg(toX: number, toY: number, speed = 64, fixesForward = false): { to: { x: number, y: number }, speed: number, fixesForward: boolean } {
             return {
-                to : {
-                    x:Math.round(toX),
-                    y:Math.round(toY)
+                to: {
+                    x: Math.round(toX),
+                    y: Math.round(toY)
                 },
-                speed:speed,
-                fixesForward:fixesForward
+                speed: speed,
+                fixesForward: fixesForward
             };
         }
 

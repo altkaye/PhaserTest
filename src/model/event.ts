@@ -13,7 +13,7 @@ module pt.model {
          */
         protected cache: any;
 
-        private hasDone:boolean;
+        private hasDone: boolean;
         private currentParent: pt.object.GameObject;
 
 
@@ -43,7 +43,7 @@ module pt.model {
         /**
          * Event#done is called
          */
-        get HasDone():boolean {
+        get HasDone(): boolean {
             return this.hasDone;
         }
 

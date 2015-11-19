@@ -5,7 +5,7 @@ module pt.model {
     export class Wait extends pt.model.Event {
         private elapsedFrame: number;
         private waitTime: number;
-        private lockInput:boolean;
+        private lockInput: boolean;
 
         constructor() {
             super(this.begin, null, this.update);

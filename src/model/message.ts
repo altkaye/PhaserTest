@@ -27,7 +27,7 @@ module pt.model {
             }
         }
 
-        private static nextPage(self):boolean {
+        private static nextPage(self): boolean {
             if (self.pages.length == 0) {
                 return false;
             } else {

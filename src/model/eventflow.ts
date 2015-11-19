@@ -2,15 +2,15 @@
 module pt.model {
 
     export class LinkedEvent {
-        private event:pt.model.Event;
+        private event: pt.model.Event;
         private parent;
         private from;
-        private arg:any;
-        private onDoneCache:any;
+        private arg: any;
+        private onDoneCache: any;
 
-        protected next:LinkedEvent;
+        protected next: LinkedEvent;
 
-        constructor(ev?:pt.model.Event, parent?, from?, arg?) {
+        constructor(ev?: pt.model.Event, parent?, from?, arg?) {
             this.event = ev;
             this.arg = arg;
             if (ev != null) {
@@ -24,7 +24,7 @@ module pt.model {
             return this.next != null;
         }
 
-        public setNext(e:LinkedEvent) {
+        public setNext(e: LinkedEvent) {
             this.next = e;
         }
 
@@ -41,8 +41,8 @@ module pt.model {
     }
 
     class Then extends LinkedEvent {
-        private func:() => void;
-        constructor(func:() => void = () => {}) {
+        private func: () => void;
+        constructor(func: () => void = () => { }) {
             super(null, null, null);
             this.func = func;
         }
@@ -56,7 +56,7 @@ module pt.model {
     }
 
     class EndIf extends LinkedEvent {
-        private func:() => boolean;
+        private func: () => boolean;
 
         constructor(f) {
             super(null, null, null);
@@ -71,18 +71,18 @@ module pt.model {
     }
 
     export class EventFlow {
-        private queue:Array<LinkedEvent>;
+        private queue: Array<LinkedEvent>;
 
         constructor() {
             this.queue = [];
         }
 
-        public next(ev:pt.model.Event, parent?, from?, arg?):EventFlow {
+        public next(ev: pt.model.Event, parent?, from?, arg?): EventFlow {
             var lev = new LinkedEvent(ev, parent, from, arg);
             return this.push(lev);
         }
 
-        public push(le:LinkedEvent) {
+        public push(le: LinkedEvent) {
             if (this.queue.length != 0) {
                 this.last.setNext(le);
             }
@@ -90,17 +90,17 @@ module pt.model {
             return this;
         }
 
-        public then(func:() => void) {
+        public then(func: () => void) {
             var t = new Then(func);
             return this.push(t);
         }
 
-        public endIf(func:() => boolean) {
+        public endIf(func: () => boolean) {
             var ei = new EndIf(func);
             return this.push(ei);
         }
 
-        get last():LinkedEvent {
+        get last(): LinkedEvent {
             return this.queue[this.queue.length - 1];
         }
 

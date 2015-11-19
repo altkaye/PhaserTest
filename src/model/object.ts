@@ -5,21 +5,21 @@ module pt.model {
     }
 
     export class GameObjectData {
-        public static EMPTY():GameObjectData {
+        public static EMPTY(): GameObjectData {
             return new GameObjectData("", "");
         }
 
-        public id:string;
-        public name:string;
-        public position:{x:number, y:number, layer: number};
-        public forward:{x:number, y:number};
-        public key:string;
-        public gameEvents:Array<pt.model.Event>;
-        public imageType:ImageType;
-        public frame:number|string;
-        public cache:any;
+        public id: string;
+        public name: string;
+        public position: { x: number, y: number, layer: number };
+        public forward: { x: number, y: number };
+        public key: string;
+        public gameEvents: Array<pt.model.Event>;
+        public imageType: ImageType;
+        public frame: number | string;
+        public cache: any;
 
-        constructor(name:string, key:string, position:{x:number, y:number, layer:number} = {x:0, y:0, layer:0}, forward:{x:number, y:number} = {x:0, y:0}, id:string = "",  events:Array<pt.model.Event> = [], type:ImageType = ImageType.CHARACTER, cache = {}, frame:string|number = 0) {
+        constructor(name: string, key: string, position: { x: number, y: number, layer: number } = { x: 0, y: 0, layer: 0 }, forward: { x: number, y: number } = { x: 0, y: 0 }, id: string = "", events: Array<pt.model.Event> = [], type: ImageType = ImageType.CHARACTER, cache = {}, frame: string | number = 0) {
             this.id = id;
             this.name = name;
             this.position = position;
@@ -32,7 +32,7 @@ module pt.model {
         }
 
         public toJSON() {
-            var ret:any = {};
+            var ret: any = {};
 
             for (var prop in this) {
                 if (typeof this[prop] !== "function") {
@@ -66,9 +66,9 @@ module pt.model {
         }
     }
 
-    export function buildSampleObj():GameObjectData {
-        var ret = new GameObjectData("npc1", "02_town2",{
-            x:400, y:200, layer:1
+    export function buildSampleObj(): GameObjectData {
+        var ret = new GameObjectData("npc1", "02_town2", {
+            x: 400, y: 200, layer: 1
         });
         return ret;
     }

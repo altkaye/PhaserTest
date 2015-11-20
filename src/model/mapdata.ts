@@ -209,6 +209,23 @@ module pt.model {
             return ret;
         }
 
+        get AssetKeys():Array<string> {
+            var ret = [];
+            this.Chipsets.forEach((c) => {
+                ret.push(c.Key);
+            })
+            return ret;
+        }
+
+        get AssetPaths():Array<string> {
+            var ret = [];
+            this.Chipsets.forEach((c) => {
+                ret.push(c.Path);
+            })
+            return ret;
+        }
+
+
         public toJSON() {
             var ret = {
                 id:this.id,
@@ -277,6 +294,9 @@ module pt.model {
         }
         get Size(): number {
             return this.size;
+        }
+        get Path(): string {
+            return this.path;
         }
 
         public static fromJSON(json:any):ChipSet {

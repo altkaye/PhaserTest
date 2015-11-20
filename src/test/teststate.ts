@@ -22,6 +22,7 @@ module pt.test {
             this.load.image("chara", "img/CharaChip/16_hero1.png");
             this.load.image("02_town2", "img/CharaChip/02_town2.png");
             this.load.image("panel", "img/Panel/pipo/pipo-WindowBase006.png")
+            this.load.audio("bgm", "sound/BGM/game_maoudamashii_4_field07.ogg");
             this.game.time.advancedTiming = true;
         }
 
@@ -50,10 +51,15 @@ module pt.test {
             }
         }
 
+        private testSound() {
+            this.add.audio("bgm", 0.2).play();
+        }
+
         private testMessageWindow() {
             var win = new pt.sprite.MessageWindow(this.game, "panel");
             win.setOnClose((m) => {
                 console.log("mes closed");
+                //this.testSound();
             });
             win.open("<p>space to next</p><p>hello world</p>");
         }

@@ -10,7 +10,9 @@
     <script>
     window.onload = function()  {
         var game;
-        game = new Phaser.Game(640, 480, Phaser.AUTO, '', new pt.test.TestState());
+        var editor;
+        editor = new pt.tool.MapEditorState();
+        game = new Phaser.Game(640, 480, Phaser.AUTO, '', editor);
     };
     </script>
 </head>

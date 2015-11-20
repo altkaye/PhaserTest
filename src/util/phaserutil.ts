@@ -27,3 +27,4 @@ module pt.util.Point {
     export const DOWNLEFT = new Phaser.Point(-1, 1).normalize();
     export const DOWNRIGHT = new Phaser.Point(1, 1).normalize();
 }
+

@@ -4,23 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <title>PhaserTest</title>
-    <script src="phaser/build/phaser.js"> </script>
-    <script src="mithril/mithril.js"> </script>
+    <script src="phaser/build/phaser.js">
+
+    </script>
+    <script src="mithril/mithril.js">
+
+    </script>
     <script src="build/pr.js"></script>
 
     <script>
-    
     window.onload = function()  {
-        var game;
-        var editor;
-        editor = new pt.tool.MapEditorState();
-        game = new Phaser.Game(640, 480, Phaser.AUTO, '', editor);
+        console.log(pt.tool.MapEditor);
+        var test = {
+            controller:function() {},
+            view:function() {
+                return m("span",{},"hello world");
+            }
+        }
+        m.mount(document.getElementById("editorbody"), pt.tool.MapEditor);
     };
     </script>
 </head>
 
 <body>
-
+    <div id="editorbody"></div>
 </body>
 
 </html>

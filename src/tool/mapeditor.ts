@@ -25,10 +25,11 @@ module pt.tool {
         },
         view: function(ctrl) {
             return m("div", [
+                m("div", {id:"hogehoge"}),
                 m("span",{},"here is mapeditor"),
                 m("input", { onchange: m.withAttr("value", ctrl.path), value: ctrl.path() }),
-                m("button", { onclick:ctrl.run }, "すたーと"),
-                m("div", {id:"hogehoge"})
+                m("button", { onclick:ctrl.run }, "すたーと")
+
             ]);
             //m("div", [
                 //m("input", { onchange: m.withAttr("value", ctrl.path), value: ctrl.path() }),

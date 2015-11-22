@@ -1,6 +1,7 @@
 ///<reference path="../../phaser/typescript/phaser.d.ts"/>
 ///<reference path="../object/map.ts"/>
 ///<reference path="../../mithril/mithril.d.ts"/>
+///<reference path="../util/phaserutil.ts"/>
 
 module pt.tool {
     export class MapEditorState extends Phaser.State {
@@ -24,14 +25,30 @@ module pt.tool {
             console.log("create");
         }
 
-        public startLoadingMap(filePath: string, mapName: string = "editingdata") {
-            this.game.load.json(mapName, filePath).onLoadComplete.add(() => {
-                var data = pt.model.MapData.fromJSON(this.game.cache.getJSON(mapName));
+        public save(newPath = this.path) {
+            this.path = newPath;
+            if (this.path === "") {
+                this.path = "untitled.json";
+            }
+            var blob = new Blob([this.map.Data.toJSONString()], {type: "text/plain"})
 
+        }
+
+        public startLoadingMap(filePath: string = "", mapName: string = "editingdata") {
+            this.path = filePath;
+            if (filePath === "") {
+                var data = pt.model.buildSampleMapData();
                 this.game.load.images(data.AssetKeys, data.AssetPaths).onLoadComplete.add(() => {
                     this.setMap(data);
                 });
-            });
+            } else {
+                this.game.load.json(mapName, filePath).onLoadComplete.add(() => {
+                    var data = pt.model.MapData.fromJSON(this.game.cache.getJSON(mapName));
+                    this.game.load.images(data.AssetKeys, data.AssetPaths).onLoadComplete.add(() => {
+                        this.setMap(data);
+                    });
+                });
+            }
         }
 
         private setMap(data) {

@@ -1,4 +1,5 @@
 ///<reference path="../../phaser/typescript/phaser.d.ts"/>
+///<reference path="../../js/util.d.ts"/>
 module pt.util {
     /**
      * need to set same anchor
@@ -14,6 +15,21 @@ module pt.util {
         }
         return { x: lx, y: ly };
     }
+
+    export function writeFile(name, content) {
+        return writeToLocal(name, content);
+    }
+
+    export function downloadAsFile(fileName:string, content:string) {
+        var blob = new Blob([content]);
+        var url = window.URL;
+        var blobURL = url.createObjectURL(blob);
+
+        var a:any = document.createElement('a');
+        a.download = fileName;
+        a.href = blobURL;
+        a.click();
+    };
 }
 
 module pt.util.Point {

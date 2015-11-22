@@ -47,19 +47,20 @@
                     </div>
                     <script>
                         window.onload = function()  {
-                        console.log(pt.tool.MapEditor);
-                        var test = {
-                            controller:function() {},
-                            view:function() {
-                                return m("span",{},"hello world");
+                            console.log(pt.tool.MapEditor);
+                            var test = {
+                                controller:function() {},
+                                view:function() {
+                                    return m("span",{},"hello world");
+                                }
                             }
-                        }
-                        m.mount(document.getElementById("editorbody"), pt.tool.MapEditor);
-                    };
+                            m.mount(document.getElementById("editorbody"), pt.tool.MapEditor);
+                            //pt.util.downloadAsFile("hoge.txt", "aaaaaaaa");
+                        };
                     </script>
 
 
-                    <div class="mdl-card mdl-shadow--4dp mdl-cell">
+                    <div class="mdl-card mdl-shadow--4dp mdl-cell"  style="width:200px;">
                         <div class="mdl-card__title">
                             <h2 class="mdl-card__title-text">title Text Goes Here</h2>
                         </div>
@@ -78,6 +79,7 @@
             </div>
         </main>
     </div>
+    <script src="js/util.js"></script>
     <script src="mdl/material.min.js"></script>
     <script src="mithril/mithril.js"></script>
     <script src="phaser/build/phaser.js"></script>

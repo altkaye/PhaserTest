@@ -48,6 +48,7 @@ module pt.object {
 
     export class Map extends Phaser.Group {
         private layers: Array<MapLayer>;
+        private data:pt.model.MapData;
 
         get Layers(): Array<MapLayer> {
             return this.layers;
@@ -59,6 +60,10 @@ module pt.object {
 
         get Height(): number {
             return this.height;
+        }
+
+        get Data():pt.model.MapData {
+            return this.data;
         }
 
         get Center(): Phaser.Point {
@@ -111,7 +116,7 @@ module pt.object {
 
         constructor(game: Phaser.Game, data: pt.model.MapData) {
             super(game);
-
+            this.data = data;
             this.layers = [];
             data.Layers.forEach((l) => {
                 var layer = new MapLayer(game, l);

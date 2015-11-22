@@ -8,8 +8,11 @@ module pt.tool {
         controller: function() {
             this.path = m.prop("こんにちは");
 
+            var ctrl  = this;
+
             this.run = function() {
                 console.log("run");
+                console.log(ctrl.path());
                 new Phaser.Game(640, 480, Phaser.AUTO, "hogehoge", new pt.test.TestState());
             }
             /**

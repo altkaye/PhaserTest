@@ -2,7 +2,7 @@
 
 module pt.model {
     export function buildSampleMapData(col = 5, row = 5): MapData {
-        var map = new MapData(0, "sample map", col, row);
+        var map = new MapData(0, "untitled", col, row);
         var layer = buildSampleMapLayer(col, row);
         map.addLayer(layer);
 
@@ -189,6 +189,10 @@ module pt.model {
         private layers: Array<MapLayerData>;
         private gameObjects: Array<GameObjectData>;
 
+        get Name():string {
+            return this.name;
+        }
+
         /**
          * get all ChipSet used in this map
          */
@@ -239,6 +243,10 @@ module pt.model {
                 ret.gameObjects.push(o.toJSON());
             })
             return ret;
+        }
+
+        public toJSONString(): string {
+            return JSON.stringify(this.toJSON());
         }
 
         public static fromJSON(json:any):MapData {

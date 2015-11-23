@@ -229,6 +229,14 @@ module pt.model {
             return ret;
         }
 
+        public removeChipSet(name) {
+            //TODO
+        }
+
+        public addChipSet(c:ChipSet) {
+            //TODO
+        }
+
 
         public toJSON() {
             var ret = {

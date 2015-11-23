@@ -65,12 +65,25 @@ module pt.tool {
             this.setPaintTile();
         }
 
+        public addChipSet(name, path, onDone) {
+            //todo
+        }
+
+        public removeChipSet(name) {
+            //todo
+        }
+
         public setPaintTile(tile?:pt.model.Tile) {
             if (tile == null) {
                 var chipsets = this.map.Data.Chipsets;
                 tile = new pt.model.Tile(chipsets[0].Key, 0);
             }
             this.tile = tile;
+        }
+
+        public switchEditLayer(index = 0) {
+            this.dispatchLayerEvents();
+            this.setLayerEvent(index);
         }
 
         private dispatchLayerEvents(index = this.currentLayer) {

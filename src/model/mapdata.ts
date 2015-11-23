@@ -245,8 +245,8 @@ module pt.model {
             return ret;
         }
 
-        public toJSONString(): string {
-            return JSON.stringify(this.toJSON());
+        public toJSONString(space = 4): string {
+            return JSON.stringify(this.toJSON(), null, space);
         }
 
         public static fromJSON(json:any):MapData {

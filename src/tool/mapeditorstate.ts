@@ -25,55 +25,75 @@ module pt.tool {
             console.log("create");
         }
 
-        public save(newPath = this.path) {
-            this.path = newPath;
-            if (this.path === "") {
-                this.path = "untitled.json";
-            }
-            var blob = new Blob([this.map.Data.toJSONString()], {type: "text/plain"})
-
+        public save() {
+            pt.util.downloadAsFile(this.map.Data.Name + ".json", this.map.Data.toJSONString());
         }
 
-        public startLoadingMap(filePath: string = "", mapName: string = "editingdata") {
+        public startLoadingMap(filePath: string = "", mapName: string = "untitled.json") {
+            console.log("start loading");
             this.path = filePath;
             if (filePath === "") {
+                console.log("new file");
                 var data = pt.model.buildSampleMapData();
                 this.game.load.images(data.AssetKeys, data.AssetPaths).onLoadComplete.add(() => {
+                    console.log("done loading imgs");
                     this.setMap(data);
                 });
+                this.game.load.start();
             } else {
                 this.game.load.json(mapName, filePath).onLoadComplete.add(() => {
                     var data = pt.model.MapData.fromJSON(this.game.cache.getJSON(mapName));
                     this.game.load.images(data.AssetKeys, data.AssetPaths).onLoadComplete.add(() => {
                         this.setMap(data);
                     });
+                    this.game.load.start();
                 });
+                this.game.load.start();
             }
         }
 
         private setMap(data) {
+            console.log("setmap");
+            console.log(data);
             this.map = new pt.object.Map(this.game, data);
             if (this.map != null) {
                 this.world.remove(this.map);
             }
             this.world.add(this.map);
+            this.currentLayer = 0;
             this.setLayerEvent();
+            this.setPaintTile();
+        }
+
+        public setPaintTile(tile?:pt.model.Tile) {
+            if (tile == null) {
+                var chipsets = this.map.Data.Chipsets;
+                tile = new pt.model.Tile(chipsets[0].Key, 0);
+            }
+            this.tile = tile;
         }
 
         private dispatchLayerEvents(index = this.currentLayer) {
-            this.map.Layers[index].Sprite.events.onInputDown.removeAll();
+            this.map.getLayer(index).Sprite.events.onInputDown.removeAll();
         }
 
         private setLayerEvent(index = this.currentLayer) {
-            this.map.Layers[index].Sprite.events.onInputDown.add(this.putTile);
+            this.map.getLayer(index).Sprite.inputEnabled = true;
+            this.map.getLayer(index).Sprite.events.onInputDown.add((sp, p) => {
+                console.log(p);
+                this.putTile(p, this.tile);
+            });
         }
 
-        private putTile(p: Phaser.Pointer) {
-            var l = this.map.Layers[this.currentLayer];
+        private putTile(p: Phaser.Pointer, tile = this.tile, l =  this.map.getLayer(this.currentLayer)) {
+            console.log("put tile");
+            console.log(this.map);
             var local = pt.util.worldToLocal(p.worldX, p.worldY, l);
             local.x /= 32;
             local.y /= 32;
-            l.addTile(this.tile.Id, local.x, local.y);
+            console.log(tile);
+            console.log(local);
+            l.addTile(tile.Id, local.x, local.y);
         }
 
         public update() {

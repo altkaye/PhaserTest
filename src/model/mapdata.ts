@@ -175,9 +175,13 @@ module pt.model {
             return x + y * this.column;
         }
 
-        public addChipset(chipset: ChipSet): MapLayerData {
+        public addChipSet(chipset: ChipSet): MapLayerData {
             this.chipsets.push(chipset);
             return this;
+        }
+
+        public removeChipSet(chipset:ChipSet) {
+            return this.chipsets.splice(this.chipsets.indexOf(chipset), 1);
         }
     }
 
@@ -229,12 +233,16 @@ module pt.model {
             return ret;
         }
 
-        public removeChipSet(name) {
-            //TODO
+        public removeChipSet(chipset:ChipSet) {
+            this.layers.forEach((l) => {
+                l.removeChipSet(chipset);
+            });
         }
 
         public addChipSet(c:ChipSet) {
-            //TODO
+            this.layers.forEach((l) => {
+                l.addChipSet(c);
+            });
         }
 
 

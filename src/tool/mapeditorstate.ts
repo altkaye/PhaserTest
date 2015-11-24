@@ -35,7 +35,7 @@ module pt.tool {
             if (filePath === "") {
                 console.log("new file");
                 var data = pt.model.buildSampleMapData();
-                this.game.load.images(data.AssetKeys, data.AssetPaths).onLoadComplete.add(() => {
+                this.game.load.images(data.AssetKeys, data.AssetPaths).onLoadComplete.addOnce(() => {
                     console.log("done loading imgs");
                     this.setMap(data);
                 });
@@ -43,7 +43,7 @@ module pt.tool {
             } else {
                 this.game.load.json(mapName, filePath).onLoadComplete.add(() => {
                     var data = pt.model.MapData.fromJSON(this.game.cache.getJSON(mapName));
-                    this.game.load.images(data.AssetKeys, data.AssetPaths).onLoadComplete.add(() => {
+                    this.game.load.images(data.AssetKeys, data.AssetPaths).onLoadComplete.addOnce(() => {
                         this.setMap(data);
                     });
                     this.game.load.start();
@@ -52,7 +52,7 @@ module pt.tool {
             }
         }
 
-        private setMap(data) {
+        private setMap(data:pt.model.MapData) {
             console.log("setmap");
             console.log(data);
             this.map = new pt.object.Map(this.game, data);
@@ -65,12 +65,24 @@ module pt.tool {
             this.setPaintTile();
         }
 
-        public addChipSet(name, path, onDone) {
-            //todo
+        private loadChipSetAsset(chipset:pt.model.ChipSet, onload = () => {}) {
+            this.game.load.image(chipset.Key, chipset.Path).onFileComplete.addOnce(onload);
+            this.game.load.start();
         }
 
-        public removeChipSet(name) {
-            //todo
+        public addChipSet(c:pt.model.ChipSet, onDone?:()=>void) {
+            this.map.Data.addChipSet(c);
+            this.loadChipSetAsset(c, () => {
+                onDone();
+            });
+        }
+
+        public removeChipSet(chipset:pt.model.ChipSet) {
+            this.map.Data.removeChipSet(chipset);
+            
+            if (this.tile.Key === chipset.Key) {
+                this.setPaintTile();
+            }
         }
 
         public setPaintTile(tile?:pt.model.Tile) {

@@ -156,7 +156,7 @@ module pt.model {
                 this.setPassability(x, y, passability);
                 return true;
             } else if (typeof chipsetKey !== "string") {
-                this.addChipset(chipsetKey);
+                this.addChipSet(chipsetKey);
                 var tile = new pt.model.Tile(chipsetKey.Key, id);
                 this.tiles[this.getIndexOf(x, y)] = tile;
                 passability = passability || chipsetKey.getPassability(id);

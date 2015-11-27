@@ -17,9 +17,11 @@ module pt.model {
         public gameEvents: Array<pt.model.Event>;
         public imageType: ImageType;
         public frame: number | string;
-        public cache: any;
+        public storage: any;
+        public width: number;
+        public height: number;
 
-        constructor(name: string, key: string, position: { x: number, y: number, layer: number } = { x: 0, y: 0, layer: 0 }, forward: { x: number, y: number } = { x: 0, y: 0 }, id: string = "", events: Array<pt.model.Event> = [], type: ImageType = ImageType.CHARACTER, cache = {}, frame: string | number = 0) {
+        constructor(name: string = "", key: string = "", position: { x: number, y: number, layer: number } = { x: 0, y: 0, layer: 0 }, forward: { x: number, y: number } = { x: 0, y: 0 }, id: string = "", events: Array<pt.model.Event> = [], type: ImageType = ImageType.CHARACTER, storage = {}, frame: string | number = 0, width = -1, height = -1) {
             this.id = id;
             this.name = name;
             this.position = position;
@@ -27,8 +29,10 @@ module pt.model {
             this.key = key;
             this.gameEvents = events;
             this.imageType = type;
-            this.cache = cache;
+            this.storage = storage;
             this.frame = frame;
+            this.width = width;
+            this.height = height;
         }
 
         public toJSON() {
@@ -60,9 +64,70 @@ module pt.model {
                 json.id,
                 events,
                 json.objectType,
-                json.cache,
+                json.storage,
                 json.frame
             )
+        }
+    }
+
+    export class ObjectBuilder {
+        private data:GameObjectData;
+
+        constructor() {
+            this.data = new GameObjectData();
+        }
+
+        public name(val) {
+            this.data.name = val;
+            return this;
+        }
+
+        public key(val) {
+            this.data.key = val;
+            return this;
+        }
+
+        public position(x, y) {
+            this.data.position.x = x;
+            this.data.position.y = y;
+            return this;
+        }
+
+        public forward(x, y) {
+            this.data.forward.x = x;
+            this.data.forward.y = y;
+            return this;
+        }
+
+        public id(val) {
+            this.data.id = val;
+            return this;
+        }
+
+        public event(e) {
+            this.data.gameEvents.push(e);
+            return this;
+        }
+
+        public events(es) {
+            es.forEach((e) => {
+                this.event(e);
+            });
+            return this;
+        }
+
+        public width(val) {
+            this.data.width = val;
+            return this;
+        }
+
+        public height(val) {
+            this.data.height = val;
+            return this;
+        }
+
+        public build() {
+            return this.data;
         }
     }
 

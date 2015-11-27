@@ -9,9 +9,9 @@ module pt.model {
         protected onDone: (self: pt.model.Event) => void;
 
         /**
-         * cashe is saved in userdata
+         * strage is saved in userdata
          */
-        protected cache: any;
+        protected storage: any;
 
         private hasDone: boolean;
         private currentParent: pt.object.GameObject;
@@ -33,11 +33,11 @@ module pt.model {
          * @param onUpdate called every frame if this event is fired ,until Event#done is called
          * @cache cache is saved in user savedata
          */
-        constructor(onFire?: (parent: pt.object.GameObject, from?: pt.object.GameObject, arg?) => void, onCreate?: (parent: pt.object.GameObject, args?) => void, onUpdate?: (parent: pt.object.GameObject) => void, cache = {}) {
+        constructor(onFire?: (parent: pt.object.GameObject, from?: pt.object.GameObject, arg?) => void, onCreate?: (parent: pt.object.GameObject, args?) => void, onUpdate?: (parent: pt.object.GameObject) => void, storage = {}) {
             this.onFire = onFire;
             this.onCreate = onCreate;
             this.onUpdate = onUpdate;
-            this.cache = cache;
+            this.storage = storage;
         }
 
         /**
@@ -102,7 +102,7 @@ module pt.model {
                 onUpdate: this.onUpdate ? Event.funcToString(this.onUpdate) : null,
                 onCreate: this.onCreate ? Event.funcToString(this.onCreate) : null,
                 onFire: this.onFire ? Event.funcToString(this.onFire) : null,
-                cache: this.cache
+                storage: this.storage
             };
             /**
             for (var prop in this) {
@@ -128,7 +128,7 @@ module pt.model {
             var f = eval(json.onFire);
             var c = eval(json.onCreate);
             var u = eval(json.onUpdate);
-            var ev = new Event(f, c, u, json.cache);
+            var ev = new Event(f, c, u, json.storage);
             /**
             for (var prop in json) {
                 if (Event.isExFuncProp(prop)) {

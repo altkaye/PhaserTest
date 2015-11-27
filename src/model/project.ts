@@ -8,6 +8,6 @@ module pt.model {
         private items:Array<any>;//TODO
         private battler:Array<any>;//TODO
         private party:Array<string>;//TODO
-        private strage:any;//TODO
+        private storage:any;//TODO
     }
 }

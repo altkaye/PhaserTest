@@ -16,7 +16,7 @@ module pt.object {
 
         private sprite:pt.sprite.CharacterSprite|Phaser.Sprite;
 
-        protected cache:any;
+        protected storage:any;
 
         get Sprite():pt.sprite.CharacterSprite|Phaser.Sprite {
             return this.sprite;
@@ -26,8 +26,8 @@ module pt.object {
             return this.imageType;
         }
 
-        get Cache() {
-            return this.cache;
+        get Storage() {
+            return this.storage;
         }
 
         constructor(game:Phaser.Game, data:pt.model.GameObjectData = pt.model.GameObjectData.EMPTY()) {
@@ -38,7 +38,7 @@ module pt.object {
             this.imageKey = data.key;
             this.gameEvents = data.gameEvents;
             this.imageType = data.imageType;
-            this.cache = data.cache;
+            this.storage = data.storage;
             this.frame = data.frame;
 
             this.updateSprite();
@@ -109,7 +109,7 @@ module pt.object {
                 this.id,
                 this.gameEvents,
                 this.imageType,
-                this.cache,
+                this.storage,
                 this.sprite.frame
             );
         }

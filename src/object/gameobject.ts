@@ -6,17 +6,44 @@
 
 module pt.object {
     export class GameObject extends Phaser.Group {
-        protected id:string;
-        protected forward:Phaser.Point;
-        protected imageKey:string;
-        protected gameEvents:Array<pt.model.Event>;
-        protected imageType:pt.model.ImageType;
-        protected layer:number;
-        protected frame:string|number;
-
+        private data:pt.model.GameObjectData;
         private sprite:pt.sprite.CharacterSprite|Phaser.Sprite;
 
-        protected storage:any;
+        get id():string {
+            return this.data.id;
+        };
+
+        get forward():Phaser.Point {
+            return new Phaser.Point(this.data.position.x, this.data.forward.y);
+        };
+
+        get imageKey():string {
+            return this.data.key;
+        };
+
+        get gameEvents():Array<pt.model.Event> {
+            return this.data.gameEvents;
+        };
+
+        get imageType():pt.model.ImageType {
+            return this.data.imageType;
+        };
+
+        get layer():number {
+            return this.data.position.layer;
+        };
+
+        set layer(v) {
+            this.data.position.layer = v;
+        }
+
+        get frame():string|number {
+            return this.data.frame;
+        };
+
+        get storage():any {
+            return this.data.storage();
+        };
 
         get Sprite():pt.sprite.CharacterSprite|Phaser.Sprite {
             return this.sprite;
@@ -32,22 +59,14 @@ module pt.object {
 
         constructor(game:Phaser.Game, data:pt.model.GameObjectData = pt.model.GameObjectData.EMPTY()) {
             super(game);
-            this.id = data.id;
-            this.name = data.name;
-            this.forward = new Phaser.Point(data.forward.x, data.forward.y);
-            this.imageKey = data.key;
-            this.gameEvents = data.gameEvents;
-            this.imageType = data.imageType;
-            this.storage = data.storage;
-            this.frame = data.frame;
+            this.data = data;
 
             this.updateSprite();
-
             this.position.setTo(data.position.x, data.position.y);
         }
 
         public updateForward(f:Phaser.Point) {
-            this.forward = f;
+            this.data.forward = f;
             if (this.imageType === pt.model.ImageType.CHARACTER) {
                 (<pt.sprite.CharacterSprite>this.sprite).updateAnimation(f);
             }
@@ -100,18 +119,8 @@ module pt.object {
             });
         }
 
-        public toData():pt.model.GameObjectData {
-            return new pt.model.GameObjectData(
-                this.name,
-                this.imageKey,
-                {x:this.position.x, y:this.position.y, layer:this.layer},
-                this.forward,
-                this.id,
-                this.gameEvents,
-                this.imageType,
-                this.storage,
-                this.sprite.frame
-            );
+        get Data():pt.model.GameObjectData {
+            return this.data;
         }
     }
 }

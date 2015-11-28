@@ -86,7 +86,22 @@ module pt.object {
             return ret;
         }
 
-        public addChildInLayer(o, layer: string | number = 0) {
+        public addGameObject(obj:pt.object.GameObject, layer?) {
+            if (layer != null) {
+                this.removeGameObject(obj);
+                obj.layer = layer;
+            }
+            this.data.addGameObject(obj.Data);
+            this.addChildInLayer(obj, obj.layer);
+        }
+
+        public removeGameObject(obj:pt.object.GameObject) {
+            this.data.removeGameObject(obj.Data);
+            this.removeChild(obj, true);
+        }
+
+        /** add object */
+        public addChildInLayer(o:PIXI.DisplayObjectContainer, layer: string | number = 0) {
             var l = this.getLayer(layer);
             if (l) {
                 return l.addChild(o);
@@ -95,14 +110,14 @@ module pt.object {
             }
         }
 
-        public removeChild(o, searchLayers = true) {
+        public removeChild(o:PIXI.DisplayObjectContainer, searchLayers = true) {
             if (!searchLayers) {
                 return super.removeChild(o);
             }
 
             var index = this.children.indexOf(o);
             if (index >= 0) {
-                return this.removeChildAt(o);
+                return super.removeChild(o);
             } else {
                 var ret;
                 this.layers.forEach((l) => {

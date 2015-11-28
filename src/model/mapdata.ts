@@ -245,6 +245,16 @@ module pt.model {
             });
         }
 
+        public addGameObject(obj:pt.model.GameObjectData) {
+            this.gameObjects.push(obj);
+        }
+
+        public removeGameObject(obj:pt.model.GameObjectData) {
+            var index = this.gameObjects.indexOf(obj);
+            if (index >= 0) {
+                this.gameObjects.splice(index, 1);
+            }
+        }
 
         public toJSON() {
             var ret = {

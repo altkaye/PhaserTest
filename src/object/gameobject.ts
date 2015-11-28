@@ -13,6 +13,10 @@ module pt.object {
             return this.data.id;
         };
 
+        get Position():Phaser.Point {
+            return this.position;
+        }
+
         get forward():Phaser.Point {
             return new Phaser.Point(this.data.position.x, this.data.forward.y);
         };
@@ -111,12 +115,19 @@ module pt.object {
             this.sprite.anchor.set(0.5, 0.5);
         }
 
+        private syncData() {
+            this.data.position.x = this.position.x;
+            this.data.position.y = this.position.y;
+        }
+
         public update() {
             super.update();
             //console.log("update");
             this.gameEvents.forEach((e) => {
+                this.syncData();//TODO
                 e.callOnUpdate(this);
             });
+            this.syncData();
         }
 
         get Data():pt.model.GameObjectData {

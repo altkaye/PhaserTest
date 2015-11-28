@@ -30,6 +30,12 @@ module pt.util {
         a.href = blobURL;
         a.click();
     };
+
+    export function buildInputVector(cursol:Phaser.CursorKeys, out:Phaser.Point = new Phaser.Point()) {
+        out.x = (cursol.right.isDown ? 1 : 0) + (cursol.left.isDown ? -1 : 0);
+        out.y = (cursol.down.isDown ? 1 : 0) + (cursol.up.isDown ? -1 : 0);
+        return out.normalize();
+    }
 }
 
 module pt.util.Point {

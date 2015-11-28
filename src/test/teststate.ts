@@ -3,6 +3,7 @@
 ///<reference path="../model/mapdata.ts" />
 ///<reference path="../model/move.ts" />
 ///<reference path="../model/wait.ts" />
+///<reference path="../model/controller.ts" />
 ///<reference path="../model/eventflow.ts" />
 ///<reference path="../sprite/charactersprite.ts" />
 ///<reference path="../sprite/panelsprite.ts" />
@@ -32,13 +33,14 @@ module pt.test {
             var map = this.testMapLoading();
             this.testSpriteNest();
             this.testPanel();
-            this.testGameObjAndFlow(map);
+            this.testPlayerObj(map);
             this.testMessageWindow();
         }
 
         public update(): void {
             //testing camera and input
             super.update();
+            /**
             if (this.cursol.up.isDown) {
                 this.game.camera.y -= 4;
             } else if (this.cursol.down.isDown) {
@@ -48,7 +50,19 @@ module pt.test {
                 this.game.camera.x -= 4;
             } else if (this.cursol.right.isDown) {
                 this.game.camera.x += 4;
-            }
+            }**/
+        }
+
+        private testPlayerObj(map: pt.object.Map) {
+            //test serialize
+            var player = new pt.object.GameObject(this.game, pt.model.buildSampleObj());
+            player.position.setTo(150, 150);
+            map.addGameObject(player, 0);
+            var con = new pt.model.Controller();
+            player.addEvent(con);
+
+            con.fire(player, null, {map:map, speed:64});
+            this.game.camera.follow(<any>player);
         }
 
         private testSound() {
@@ -123,7 +137,7 @@ module pt.test {
             var sample4 = new pt.object.GameObject(this.game, data);
             sample4.position.setTo(100, 100);
             var moveArg = pt.model.Move.buildArg(sample4.position.x, sample4.position.y, 64);
-            map.addChildInLayer(sample4);
+            map.addGameObject(sample4, 0);
             var flow = new pt.model.EventFlow();
             flow.next(new pt.model.Move(), sample4, null, moveArg)
                 .next(new pt.model.Wait(), sample4, null, 1)

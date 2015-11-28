@@ -9,6 +9,12 @@
     rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="mdl/material.min.css">
+
+    <script src="js/util.js"></script>
+    <script src="mdl/material.min.js"></script>
+    <script src="mithril/mithril.js"></script>
+    <script src="phaser/build/phaser.js"></script>
+    <script src="build/pr.js"></script>
 </head>
 
 <body>
@@ -47,13 +53,6 @@
                     </div>
                     <script>
                         window.onload = function()  {
-                            console.log(pt.tool.MapEditor);
-                            var test = {
-                                controller:function() {},
-                                view:function() {
-                                    return m("span",{},"hello world");
-                                }
-                            }
                             m.mount(document.getElementById("editorbody"), pt.tool.MapEditor);
                             //pt.util.downloadAsFile("hoge.txt", "aaaaaaaa");
                         };
@@ -79,11 +78,7 @@
             </div>
         </main>
     </div>
-    <script src="js/util.js"></script>
-    <script src="mdl/material.min.js"></script>
-    <script src="mithril/mithril.js"></script>
-    <script src="phaser/build/phaser.js"></script>
-    <script src="build/pr.js"></script>
+
 </body>
 
 </html>

@@ -1,5 +1,6 @@
 module pt.model {
     export class SaveData {
-        private objectStorageDiff:Array<any>;
+        private current:any;
+        private diff:any;
     }
 }

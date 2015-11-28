@@ -10,6 +10,10 @@ module pt.manager {
             return this.stack.push(o);
         }
 
+        public static has(o) {
+            return this.stack.indexOf(o) >= 0;
+        }
+
         public static remove(o:any) {
             var i = this.stack.indexOf(o);
             if (i >= 0) {

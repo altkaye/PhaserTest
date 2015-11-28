@@ -23,9 +23,11 @@ module pt.model {
         private begin(parent, from, param: { map: pt.model.MapData, speed: number }) {
             this.map = param.map;
             this.speed = param.speed;
-            pt.manager.FocusManager.request(this);
+            if (!pt.manager.FocusManager.has(this)) {
+                pt.manager.FocusManager.request(this);
+            }
             this.setOnDone(() => {
-                pt.manager.FocusManager.remove(this);
+                //pt.manager.FocusManager.remove(this);
             });
             this.move.done();
             console.log("controller begin");

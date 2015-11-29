@@ -19,6 +19,10 @@ module pt.object {
             this.addChild(this.sprite);
         }
 
+        public has(o) {
+            return this.children.indexOf(o) >= 0;
+        }
+
         /**
         public addChild(o) {
             if (o.layer) {
@@ -108,6 +112,15 @@ module pt.object {
             } else {
                 return null;
             }
+        }
+
+        public getLayerOf(o:pt.object.GameObject) {
+           for (var i = 0; i < this.layers.length; i++) {
+               if (this.layers[i].has(o)) {
+                   return this.layers[i];
+               }
+           }
+           return null;
         }
 
         public removeChild(o:PIXI.DisplayObjectContainer, searchLayers = true) {

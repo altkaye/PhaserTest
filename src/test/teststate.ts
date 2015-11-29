@@ -61,7 +61,7 @@ module pt.test {
             var con = new pt.model.Controller();
             player.addEvent(con);
 
-            con.fire(player, null, {map:map, speed:64});
+            con.fire(player, null, {map:map, tps:5});
             this.game.camera.follow(<any>player);
         }
 

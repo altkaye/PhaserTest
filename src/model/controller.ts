@@ -20,9 +20,13 @@ module pt.model {
             this.cursol = parent.game.input.keyboard.createCursorKeys();
         }
 
-        private begin(parent, from, param: { map: pt.model.MapData, speed: number }) {
+        private begin(parent:pt.object.GameObject, from, param: { map: pt.model.MapData, speed: number, tps?:number }) {
             this.map = param.map;
             this.speed = param.speed;
+            if (param.tps != null) {
+                //var layer = param.map.getLayer(parent.layer);
+                this.speed = 32 * param.tps;
+            }
             if (!pt.manager.FocusManager.has(this)) {
                 pt.manager.FocusManager.request(this);
             }

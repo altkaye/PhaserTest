@@ -256,6 +256,10 @@ module pt.model {
             }
         }
 
+        public getLayer(i) {
+            return this.layers[i];
+        }
+
         public toJSON() {
             var ret = {
                 id:this.id,

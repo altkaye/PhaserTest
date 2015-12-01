@@ -259,6 +259,10 @@ module pt.model {
         public getLayer(i) {
             return this.layers[i];
         }
+        
+        public getGameObjects() {
+            return this.gameObjects;
+        }
 
         public toJSON() {
             var ret = {

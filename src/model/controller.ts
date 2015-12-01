@@ -6,21 +6,24 @@
 
 module pt.model {
     export class Controller extends pt.model.Event {
-        private map: pt.model.MapData;
+        private map: pt.object.Map;
         private speed: number;
         private cursol: Phaser.CursorKeys;
+        private enter: Phaser.Key;
         private move: pt.model.Move;
 
         constructor() {
             super(this.begin, this.init, this.update);
         }
 
-        private init(parent: pt.object.GameObject, param: { map: pt.model.MapData, speed: number }) {
+        private init(parent: pt.object.GameObject, param: { map: pt.object.Map, speed: number }) {
             this.move = new pt.model.Move();
-            this.cursol = parent.game.input.keyboard.createCursorKeys();
         }
 
-        private begin(parent:pt.object.GameObject, from, param: { map: pt.model.MapData, speed: number, tps?:number }) {
+        private begin(parent:pt.object.GameObject, from, param: { map: pt.object.Map, speed: number, tps?:number }) {
+            this.cursol = parent.game.input.keyboard.createCursorKeys();
+            this.enter = parent.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
             this.map = param.map;
             this.speed = param.speed;
             if (param.tps != null) {
@@ -38,6 +41,10 @@ module pt.model {
         }
 
         private update(parent: pt.object.GameObject) {
+            if (this.enter.justDown && pt.manager.FocusManager.isFocused(this)) {
+                this.map.fireEvents(parent);
+            }
+
             if (this.move.HasDone && pt.manager.FocusManager.isFocused(this)) {
                 var to = pt.util.buildInputVector(this.cursol);
                 if (to.x != 0 || to.y != 0) {

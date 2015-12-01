@@ -35,6 +35,10 @@ module pt.model {
             this.height = height;
         }
 
+        public getHitRect(): Phaser.Rectangle {
+            return new Phaser.Rectangle(this.position.x - this.width / 2, this.position.y - this.height / 2, this.width, this.height);
+        }
+
         public toJSON() {
             var ret: any = {};
 

@@ -51,8 +51,10 @@ module pt.object {
     }
 
     export class Map extends Phaser.Group {
-        private layers: Array<MapLayer>;
         private data:pt.model.MapData;
+
+        private layers: Array<MapLayer>;
+        private gameObjects: Array<pt.object.GameObject>;
 
         get Layers(): Array<MapLayer> {
             return this.layers;
@@ -90,17 +92,32 @@ module pt.object {
             return ret;
         }
 
-        public addGameObject(obj:pt.object.GameObject, layer?) {
+        public fireEvents(from:pt.object.GameObject, rect:Phaser.Rectangle = from.getHitRect(), layer:number = from.layer, fireTop:boolean = false) {
+            var objs = this.data.getGameObjects();
+            for (var i = 0; i < objs.length; i++) {
+                var o = objs[i];
+
+                if (o.position.layer == layer && pt.util.collidesRect(o.getHitRect(), rect)) {
+
+                }
+            }
+        }
+
+        public addGameObject(obj:pt.object.GameObject, layer?, updateData = true) {
             if (layer != null) {
-                this.removeGameObject(obj);
+                this.removeGameObject(obj, updateData);
                 obj.layer = layer;
             }
-            this.data.addGameObject(obj.Data);
+            if (updateData) {
+                this.data.addGameObject(obj.Data);
+            }
             this.addChildInLayer(obj, obj.layer);
         }
 
-        public removeGameObject(obj:pt.object.GameObject) {
-            this.data.removeGameObject(obj.Data);
+        public removeGameObject(obj:pt.object.GameObject, updateData = true) {
+            if (updateData) {
+                this.data.removeGameObject(obj.Data);
+            }
             this.removeChild(obj, true);
         }
 
@@ -160,6 +177,11 @@ module pt.object {
                     this.height = layer.height;
                 }
             });
+
+            this.gameObjects = [];
+            data.getGameObjects().forEach((od) => {
+                this.addGameObject(new pt.object.GameObject(game, od), od.position.layer, false);
+            })
         }
     }
 }

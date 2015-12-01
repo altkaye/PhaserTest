@@ -69,6 +69,10 @@ module pt.object {
             this.position.setTo(data.position.x, data.position.y);
         }
 
+        public getHitRect(): Phaser.Rectangle {
+            return new Phaser.Rectangle(this.position.x - this.width / 2, this.position.y - this.height / 2, this.width, this.height);
+        }
+
         public updateForward(f:Phaser.Point) {
             this.data.forward = f;
             if (this.imageType === pt.model.ImageType.CHARACTER) {
@@ -118,6 +122,8 @@ module pt.object {
         private syncData() {
             this.data.position.x = this.position.x;
             this.data.position.y = this.position.y;
+            this.width = this.data.width >= 0 ? this.data.width : this.sprite.width;
+            this.height = this.data.height >= 0 ? this.data.height : this.sprite.height;
         }
 
         public update() {

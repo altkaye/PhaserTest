@@ -20,18 +20,27 @@ module pt.util {
         return writeToLocal(name, content);
     }
 
-    export function downloadAsFile(fileName:string, content:string) {
+    export function downloadAsFile(fileName: string, content: string) {
         var blob = new Blob([content]);
         var url = window.URL;
         var blobURL = url.createObjectURL(blob);
 
-        var a:any = document.createElement('a');
+        var a: any = document.createElement('a');
         a.download = fileName;
         a.href = blobURL;
         a.click();
     };
 
-    export function buildInputVector(cursol:Phaser.CursorKeys, out:Phaser.Point = new Phaser.Point()) {
+    export function collidesRect(a: Phaser.Rectangle, b: Phaser.Rectangle) {
+        return !(
+            ((a.y + a.height) < (b.y)) ||
+            (a.y > (b.y + b.height)) ||
+            ((a.x + a.width) < b.x) ||
+            (a.x > (b.x + b.width))
+        );
+    }
+
+    export function buildInputVector(cursol: Phaser.CursorKeys, out: Phaser.Point = new Phaser.Point()) {
         out.x = (cursol.right.isDown ? 1 : 0) + (cursol.left.isDown ? -1 : 0);
         out.y = (cursol.down.isDown ? 1 : 0) + (cursol.up.isDown ? -1 : 0);
         return out.normalize();

@@ -18,7 +18,7 @@ module pt.object {
         }
 
         get forward():Phaser.Point {
-            return new Phaser.Point(this.data.position.x, this.data.forward.y);
+            return new Phaser.Point(this.data.forward.x, this.data.forward.y);
         };
 
         get imageKey():string {
@@ -71,6 +71,16 @@ module pt.object {
 
         public getHitRect(): Phaser.Rectangle {
             return new Phaser.Rectangle(this.position.x - this.width / 2, this.position.y - this.height / 2, this.width, this.height);
+        }
+
+        public getFireRect(): Phaser.Rectangle {
+            var ret = this.getHitRect();
+            console.log(ret);
+            console.log(this.forward);
+            ret.x += this.forward.x * this.width;
+            ret.y += this.forward.y * this.height;
+            console.log(ret);
+            return ret;
         }
 
         public findEventById(id) {

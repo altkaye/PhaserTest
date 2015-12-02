@@ -13,6 +13,9 @@ module pt.sprite {
         private enterKey: Phaser.Key;
 
         private isOpened: boolean;
+
+        private currentIndex = 0;
+
         get IsOpened() {
             return this.isOpened;
         }
@@ -22,6 +25,7 @@ module pt.sprite {
             this.imageKey = key;
             this.isOpened = false;
             this.enterKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+            this.pages = [];
         }
 
         public update() {
@@ -59,11 +63,20 @@ module pt.sprite {
 
 
         private nextPage(): boolean {
-            if (this.pages.length == 0) {
+            this.currentIndex++;
+            if (this.pages.length <= this.currentIndex) {
                 return false;
             } else {
-                this.text.setText(this.pages.shift());
+                this.text.setText(this.pages[this.currentIndex]);
                 return true;
+            }
+        }
+
+        public pushMessage(src) {
+            if (src != null) {
+                MessageWindow.splitByP(src).forEach((l) => {
+                    this.pages.push(l);
+                });
             }
         }
 
@@ -71,7 +84,10 @@ module pt.sprite {
         * @param src script body
         */
         public open(src: string, requestFocus = true, addToStage = true) {
-            this.pages = MessageWindow.splitByP(src);
+            this.currentIndex = 0;
+            if (src != null) {
+                this.pushMessage(src);
+            }
             this.panel = new pt.sprite.PanelSprite(this.game, 0, 0, 300, 50, this.imageKey);
             this.panel.anchor.setTo(0.5, 0.5);
             var style = {
@@ -81,7 +97,7 @@ module pt.sprite {
                 wordWrap: true,
                 wordWrapWidth: 300
             };
-            this.text = new Phaser.Text(this.game, 0, 0, this.pages.shift(), style);
+            this.text = new Phaser.Text(this.game, 0, 0, this.pages[this.currentIndex], style);
             this.text.anchor.setTo(0.5, 0.5);
 
             this.addChild(this.panel);

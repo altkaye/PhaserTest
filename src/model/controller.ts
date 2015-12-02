@@ -24,7 +24,7 @@ module pt.model {
 
         private begin(parent:pt.object.GameObject, from, param: { map: pt.object.Map, speed: number, tps?:number }) {
             this.cursol = parent.game.input.keyboard.createCursorKeys();
-            this.enter = parent.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+            this.enter = parent.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 
             this.map = param.map;
             this.speed = param.speed;
@@ -36,7 +36,7 @@ module pt.model {
                 pt.manager.FocusManager.request(this);
             }
             this.setOnDone(() => {
-                //pt.manager.FocusManager.remove(this);
+                //pt.manager.FocusManager.remove(this); //TODO
             });
             this.move.done();
             console.log("controller begin");
@@ -44,7 +44,10 @@ module pt.model {
 
         private update(parent: pt.object.GameObject) {
             if (this.enter.justDown && pt.manager.FocusManager.isFocused(this)) {
-                this.map.fireEvents(parent);
+                console.log("try to fire events");
+                var rect = parent.getFireRect();
+                //console.log(rect);
+                this.map.fireEvents(parent, rect);
             }
 
             if (this.move.HasDone && pt.manager.FocusManager.isFocused(this)) {

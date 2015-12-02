@@ -19,6 +19,9 @@ module pt.model {
         private currentParent: pt.object.GameObject;
 
         protected unfirableWithNoArg = false;
+        protected pause = false;
+
+        protected allowedTriggers:Array<any>;
 
         get Id(): string{
             if (this.id == null) {
@@ -29,6 +32,14 @@ module pt.model {
 
         set Id(v) {
             this.id = v;
+        }
+
+        set Pause(v) {
+            this.pause = v;
+        }
+
+        get Pause() {
+            return this.pause;
         }
 
         get OnDone() {
@@ -51,6 +62,7 @@ module pt.model {
             this.onCreate = onCreate;
             this.onUpdate = onUpdate;
             this.storage = storage;
+            this.allowedTriggers = [];
         }
 
         /**
@@ -58,6 +70,18 @@ module pt.model {
          */
         get HasDone(): boolean {
             return this.hasDone;
+        }
+
+        public isAllowedTrigger(obj) {
+            return this.allowedTriggers.length == 0 || (obj != null && this.allowedTriggers.indexOf(obj) >= 0);
+        }
+
+        public addAllowedTrigger(obj) {
+            this.allowedTriggers.push(obj);
+        }
+
+        public removeAllowedTrigger(obj) {
+            this.allowedTriggers.splice(this.allowedTriggers.indexOf(obj), 1);
         }
 
         public callOnCreate(parent: pt.object.GameObject, arg?) {
@@ -70,8 +94,8 @@ module pt.model {
          * fire event. this starts update loop until Event#done is called
          */
         public fire(parent: pt.object.GameObject, from?: pt.object.GameObject, arg?) {
-            if (arg == null && this.unfirableWithNoArg) {
-                return ;
+            if (arg == null && this.unfirableWithNoArg && !this.isAllowedTrigger(from)) {
+                return;
             }
             this.hasDone = false;
 
@@ -94,7 +118,7 @@ module pt.model {
         }
 
         public callOnUpdate(parent: pt.object.GameObject) {
-            if (!this.hasDone && this.onUpdate != null) {
+            if (!this.hasDone && this.onUpdate != null && !this.Pause) {
                 this.onUpdate(parent);
             }
         }

@@ -2,6 +2,7 @@
 ///<reference path="../object/map.ts" />
 ///<reference path="../model/mapdata.ts" />
 ///<reference path="../model/move.ts" />
+///<reference path="../model/message.ts" />
 ///<reference path="../model/wait.ts" />
 ///<reference path="../model/controller.ts" />
 ///<reference path="../model/eventflow.ts" />
@@ -34,7 +35,8 @@ module pt.test {
             this.testSpriteNest();
             this.testPanel();
             this.testPlayerObj(map);
-            this.testMessageWindow();
+            this.testNPCObj(map);
+            //this.testMessageWindow();
         }
 
         public update(): void {
@@ -63,6 +65,16 @@ module pt.test {
 
             con.fire(player, null, {map:map, tps:5});
             this.game.camera.follow(<any>player);
+        }
+
+        private testNPCObj(map: pt.object.Map) {
+            //test serialize
+            var npc = new pt.object.GameObject(this.game, pt.model.buildSampleObj());
+            npc.position.setTo(250, 250);
+            map.addGameObject(npc, 0);
+            var conv = new pt.model.Message();
+            npc.addEvent(conv);
+            conv.pushMessage("<p>npcだよ</p>");
         }
 
         private testSound() {

@@ -39,6 +39,15 @@ module pt.model {
             return new Phaser.Rectangle(this.position.x - this.width / 2, this.position.y - this.height / 2, this.width, this.height);
         }
 
+        public getFireRect(): Phaser.Rectangle {
+            var ret = this.getHitRect();
+            console.log(ret);
+            ret.x += this.forward.x * this.width;
+            ret.y += this.forward.y * this.height;
+            console.log(ret);
+            return ret;
+        }
+
         public toJSON() {
             var ret: any = {};
 

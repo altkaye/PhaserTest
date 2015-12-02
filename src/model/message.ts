@@ -11,15 +11,19 @@ module pt.model {
             super(this.begin, this.init, null);
         }
 
-        private init() {
-            this.unfirableWithNoArg = true;
+        private init(parent) {
+            this.unfirableWithNoArg = false;
+            this.mesWindow = new pt.sprite.MessageWindow(parent.game, "panel");
+        }
+
+        public pushMessage(src) {
+            this.mesWindow.pushMessage(src);
         }
 
         /**
          * @param args [0] script body
          */
-        private begin(from, parent: pt.object.GameObject, arg) {
-            this.mesWindow = new pt.sprite.MessageWindow(parent.game, "panel");
+        private begin(from, parent: pt.object.GameObject, arg = "") {
             this.mesWindow.open(arg, true, true);
 
             this.mesWindow.setOnClose((f) => {

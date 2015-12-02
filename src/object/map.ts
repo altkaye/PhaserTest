@@ -106,6 +106,7 @@ module pt.object {
                 var o = objs[i];
 
                 if (o.layer == layer && pt.util.collidesRect(o.getHitRect(), rect)) {
+                    console.log("found object");
                     o.fireEvents(from, null);
                 }
             }
@@ -119,6 +120,7 @@ module pt.object {
             if (updateData) {
                 this.data.addGameObject(obj.Data);
             }
+            this.gameObjects.push(obj);
             this.addChildInLayer(obj, obj.layer);
         }
 
@@ -127,6 +129,7 @@ module pt.object {
                 this.data.removeGameObject(obj.Data);
             }
             this.removeChild(obj, true);
+            this.gameObjects.splice(this.gameObjects.indexOf(obj), 1);
         }
 
         /** add object */

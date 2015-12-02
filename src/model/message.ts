@@ -8,7 +8,11 @@ module pt.model {
         private mesWindow: pt.sprite.MessageWindow;
 
         constructor() {
-            super(this.begin);
+            super(this.begin, this.init, null);
+        }
+
+        private init() {
+            this.unfirableWithNoArg = true;
         }
 
         /**

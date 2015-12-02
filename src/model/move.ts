@@ -8,7 +8,11 @@ module pt.model {
         private fixesForward: boolean;
 
         constructor() {
-            super(this.begin, null, this.update);
+            super(this.begin, this.init, this.update);
+        }
+
+        private init() {
+            this.unfirableWithNoArg = true;
         }
 
         public static buildArg(toX: number, toY: number, speed = 64, fixesForward = false): { to: { x: number, y: number }, speed: number, fixesForward: boolean } {

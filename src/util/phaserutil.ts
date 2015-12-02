@@ -45,6 +45,16 @@ module pt.util {
         out.y = (cursol.down.isDown ? 1 : 0) + (cursol.up.isDown ? -1 : 0);
         return out.normalize();
     }
+
+    export function getRandomStr(length = 12) {
+        var c = "abcdefghijklmnopqrstuvwxyz0123456789";
+        var cl = c.length;
+        var r = "";
+        for (var i = 0; i < length; i++) {
+            r += c[Math.floor(Math.random() * cl)];
+        }
+        return r;
+    }
 }
 
 module pt.util.Point {

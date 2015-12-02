@@ -92,13 +92,21 @@ module pt.object {
             return ret;
         }
 
+        public findEventById(id:string) {
+            var ret = null;
+            this.gameObjects.some((o) => {
+                return (ret = o.findEventById(id)) != null;
+            });
+            return ret;
+        }
+
         public fireEvents(from:pt.object.GameObject, rect:Phaser.Rectangle = from.getHitRect(), layer:number = from.layer, fireTop:boolean = false) {
-            var objs = this.data.getGameObjects();
+            var objs = this.gameObjects;
             for (var i = 0; i < objs.length; i++) {
                 var o = objs[i];
 
-                if (o.position.layer == layer && pt.util.collidesRect(o.getHitRect(), rect)) {
-
+                if (o.layer == layer && pt.util.collidesRect(o.getHitRect(), rect)) {
+                    o.fireEvents(from, null);
                 }
             }
         }

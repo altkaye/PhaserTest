@@ -73,6 +73,15 @@ module pt.object {
             return new Phaser.Rectangle(this.position.x - this.width / 2, this.position.y - this.height / 2, this.width, this.height);
         }
 
+        public findEventById(id) {
+            for (var i = 0; i < this.gameEvents.length; i++) {
+                if (this.gameEvents[i].Id === id) {
+                    return this.gameEvents[i];
+                }
+            }
+            return null;
+        }
+
         public updateForward(f:Phaser.Point) {
             this.data.forward = f;
             if (this.imageType === pt.model.ImageType.CHARACTER) {
@@ -89,6 +98,12 @@ module pt.object {
 
         public hasEvent(ev:pt.model.Event) : boolean {
             return this.gameEvents.indexOf(ev) >= 0;
+        }
+
+        public fireEvents(from, args) {
+            this.gameEvents.forEach((e) => {
+                e.fire(this, from, args);
+            });
         }
 
         public removeEvent(ev:pt.model.Event) {

@@ -2,6 +2,8 @@
 ///<reference path="../object/gameobject.ts"/>
 module pt.model {
     export class Event {
+        protected id:string;
+
         protected onUpdate: (parent: pt.object.GameObject) => void;
         protected onCreate: (parent: pt.object.GameObject, args?) => void;
         protected onFire: (parent?: pt.object.GameObject, from?: pt.object.GameObject, arg?) => void;
@@ -16,6 +18,18 @@ module pt.model {
         private hasDone: boolean;
         private currentParent: pt.object.GameObject;
 
+        protected unfirableWithNoArg = false;
+
+        get Id(): string{
+            if (this.id == null) {
+                this.id = pt.util.getRandomStr();
+            }
+            return this.id;
+        }
+
+        set Id(v) {
+            this.id = v;
+        }
 
         get OnDone() {
             return this.onDone;
@@ -31,7 +45,6 @@ module pt.model {
          * @param onFire when Event#fire is called
          * @param onCreate when this event is added to GameObject
          * @param onUpdate called every frame if this event is fired ,until Event#done is called
-         * @cache cache is saved in user savedata
          */
         constructor(onFire?: (parent: pt.object.GameObject, from?: pt.object.GameObject, arg?) => void, onCreate?: (parent: pt.object.GameObject, args?) => void, onUpdate?: (parent: pt.object.GameObject) => void, storage = {}) {
             this.onFire = onFire;
@@ -57,6 +70,9 @@ module pt.model {
          * fire event. this starts update loop until Event#done is called
          */
         public fire(parent: pt.object.GameObject, from?: pt.object.GameObject, arg?) {
+            if (arg == null && this.unfirableWithNoArg) {
+                return ;
+            }
             this.hasDone = false;
 
             if (parent && !parent.hasEvent(this)) {

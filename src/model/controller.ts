@@ -1,6 +1,7 @@
 ///<reference path="event.ts"/>
 ///<reference path="mapdata.ts"/>
 ///<reference path="move.ts"/>
+///<reference path="../object/map.ts"/>
 ///<reference path="../util/phaserutil.ts"/>
 ///<reference path="../manager/focusmanager.ts"/>
 
@@ -18,6 +19,7 @@ module pt.model {
 
         private init(parent: pt.object.GameObject, param: { map: pt.object.Map, speed: number }) {
             this.move = new pt.model.Move();
+            this.unfirableWithNoArg = true;
         }
 
         private begin(parent:pt.object.GameObject, from, param: { map: pt.object.Map, speed: number, tps?:number }) {

@@ -3,7 +3,7 @@
 ///<reference path="../../mithril/mithril.d.ts"/>
 ///<reference path="../util/phaserutil.ts"/>
 
-module pt.tool {
+module pt.editor {
     export class MapEditorState extends Phaser.State {
         private path: string;
         private map: pt.object.Map;
@@ -29,15 +29,17 @@ module pt.tool {
             pt.util.downloadAsFile(this.map.Data.Name + ".json", this.map.Data.toJSONString());
         }
 
-        public startLoadingMap(filePath: string = "", mapName: string = "untitled.json") {
+        public startLoadingMap(filePath: string = "", mapName: string = "untitled", ondone = () => { }) {
             console.log("start loading");
             this.path = filePath;
             if (filePath === "") {
                 console.log("new file");
                 var data = pt.model.buildSampleMapData();
+                console.log(this.game);
                 this.game.load.images(data.AssetKeys, data.AssetPaths).onLoadComplete.addOnce(() => {
                     console.log("done loading imgs");
                     this.setMap(data);
+                    ondone();
                 });
                 this.game.load.start();
             } else {
@@ -45,6 +47,7 @@ module pt.tool {
                     var data = pt.model.MapData.fromJSON(this.game.cache.getJSON(mapName));
                     this.game.load.images(data.AssetKeys, data.AssetPaths).onLoadComplete.addOnce(() => {
                         this.setMap(data);
+                        ondone();
                     });
                     this.game.load.start();
                 });
@@ -52,7 +55,11 @@ module pt.tool {
             }
         }
 
-        private setMap(data:pt.model.MapData) {
+        public resizeGame(width, height) {
+            this.game.scale.setGameSize(width, height);
+        }
+
+        private setMap(data: pt.model.MapData, resize = true) {
             console.log("setmap");
             console.log(data);
             this.map = new pt.object.Map(this.game, data);
@@ -63,29 +70,34 @@ module pt.tool {
             this.currentLayer = 0;
             this.setLayerEvent();
             this.setPaintTile();
+
+            if (resize) {
+                console.log("resize to " + this.map.width + "," + this.map.height);
+                this.resizeGame(this.map.width, this.map.height);
+            }
         }
 
-        private loadChipSetAsset(chipset:pt.model.ChipSet, onload = () => {}) {
+        private loadChipSetAsset(chipset: pt.model.ChipSet, onload = () => { }) {
             this.game.load.image(chipset.Key, chipset.Path).onFileComplete.addOnce(onload);
             this.game.load.start();
         }
 
-        public addChipSet(c:pt.model.ChipSet, onDone?:()=>void) {
+        public addChipSet(c: pt.model.ChipSet, onDone?: () => void) {
             this.map.Data.addChipSet(c);
             this.loadChipSetAsset(c, () => {
                 onDone();
             });
         }
 
-        public removeChipSet(chipset:pt.model.ChipSet) {
+        public removeChipSet(chipset: pt.model.ChipSet) {
             this.map.Data.removeChipSet(chipset);
-            
+
             if (this.tile.Key === chipset.Key) {
                 this.setPaintTile();
             }
         }
 
-        public setPaintTile(tile?:pt.model.Tile) {
+        public setPaintTile(tile?: pt.model.Tile) {
             if (tile == null) {
                 var chipsets = this.map.Data.Chipsets;
                 tile = new pt.model.Tile(chipsets[0].Key, 0);
@@ -110,7 +122,7 @@ module pt.tool {
             });
         }
 
-        private putTile(p: Phaser.Pointer, tile = this.tile, l =  this.map.getLayer(this.currentLayer)) {
+        private putTile(p: Phaser.Pointer, tile = this.tile, l = this.map.getLayer(this.currentLayer)) {
             console.log("put tile");
             console.log(this.map);
             var local = pt.util.worldToLocal(p.worldX, p.worldY, l);

@@ -1,37 +1,55 @@
 ///<reference path="../../mithril/mithril.d.ts"/>
 ///<reference path="mapeditorstate.ts" />
 ///<reference path="../test/teststate.ts" />
-module pt.tool {
+module pt.editor {
     const MAPEDITOR_CANVAS_ID = "editorcanvas";
-    export var MapEditor = {
-        state: null,
-        game: null,
+    export class MapEditorController {
+        private state: pt.editor.MapEditorState;
+        private game: Phaser.Game;
 
-        controller: function() {
+        //props
+        public path;
+
+        constructor() {
+            console.log("controller constructor");
             this.path = m.prop("こんにちは");
+        }
 
-            var ctrl = this;
-            if (MapEditor.game == null) {
-                MapEditor.state = new pt.tool.MapEditorState();
-                MapEditor.game = new Phaser.Game(640, 480, Phaser.AUTO, "hogehoge", MapEditor.state);
+        public run() {
+            console.log("call run");
+            if (this.game == null) {
+                this.state = new pt.editor.MapEditorState();
+                this.game = new Phaser.Game(0, 0, Phaser.AUTO, "canvasArea", this.state );
+                this.state.create = () => {
+                    this.state.startLoadingMap("", "untitled", () => {
+                        m.redraw(true);
+                    });
+                }
             }
-            this.run = function() {
+        }
 
-                MapEditor.state.startLoadingMap();
-            }
+        public save() {
+            this.state.save();
+        }
+    }
 
-            this.save = function() {
-                MapEditor.state.save();
-            }
-        },
-        view: function(ctrl) {
+    export class MapEditor {
+        private ctrlInstance;
+        constructor() {
+        }
+
+        public controller() {
+            return new MapEditorController();
+        }
+        public view(ctrl: MapEditorController) {
+            console.log("call view");
             return m("div", [
-                m("div", { id: "hogehoge" }),
+                m("div", { id: "canvasArea" }),
                 m("span", {}, "here is mapeditor"),
                 m("input", { onchange: m.withAttr("value", ctrl.path), value: ctrl.path() }),
                 m("button", { onclick: ctrl.run }, "すたーと"),
                 m("button", { onclick: ctrl.save }, "save")
             ]);
         }
-    };
+    }
 }

@@ -53,7 +53,8 @@
                     </div>
                     <script>
                         window.onload = function()  {
-                            m.mount(document.getElementById("editorbody"), pt.tool.MapEditor);
+                            var edit = new pt.editor.MapEditor();
+                            m.mount(document.getElementById("editorbody"), edit);
                             //pt.util.downloadAsFile("hoge.txt", "aaaaaaaa");
                         };
                     </script>

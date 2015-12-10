@@ -6,6 +6,7 @@ module pt.model {
         private to: Phaser.Point;
         private speed: number;
         private fixesForward: boolean;
+        private collides: boolean;
 
         constructor() {
             super(this.begin, this.init, this.update);
@@ -15,14 +16,15 @@ module pt.model {
             this.unfirableWithNoArg = true;
         }
 
-        public static buildArg(toX: number, toY: number, speed = 64, fixesForward = false): { to: { x: number, y: number }, speed: number, fixesForward: boolean } {
+        public static buildArg(toX: number, toY: number, speed = 64, fixesForward = false, collides = false): { to: { x: number, y: number }, speed: number, fixesForward: boolean, collides: boolean } {
             return {
                 to: {
                     x: Math.round(toX),
                     y: Math.round(toY)
                 },
                 speed: speed,
-                fixesForward: fixesForward
+                fixesForward: fixesForward,
+                collides: collides
             };
         }
 
@@ -43,10 +45,11 @@ module pt.model {
         /**
          * speed is pixel/sec
          */
-        private begin(parent: pt.object.GameObject, from: pt.object.GameObject, arg: { to: { x: number, y: number }, speed: number, fixesForward?: boolean }) {
+        private begin(parent: pt.object.GameObject, from: pt.object.GameObject, arg: { to: { x: number, y: number }, speed: number, collides?:boolean, fixesForward?: boolean}) {
             this.to = new Phaser.Point(arg.to.x, arg.to.y);
             this.speed = arg.speed;
             this.fixesForward = arg.fixesForward;
+            this.collides = arg.collides;
             if (!this.fixesForward) {
                 var direction = new Phaser.Point(this.to.x - parent.position.x, this.to.y - parent.position.y).normalize();
                 parent.updateForward(direction);

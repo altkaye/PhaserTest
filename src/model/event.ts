@@ -1,13 +1,13 @@
 
 ///<reference path="../object/gameobject.ts"/>
+///<reference path="../state/gamestate.ts"/>
 module pt.model {
     export class Event {//TODO implements IPromise, IThenable
-        protected id:string;
-
+        protected id: string;
+        //callbacks
         protected onUpdate: (parent: pt.object.GameObject) => void;
         protected onCreate: (parent: pt.object.GameObject, args?) => void;
         protected onFire: (parent?: pt.object.GameObject, from?: pt.object.GameObject, arg?) => void;
-
         protected onDone: (self: pt.model.Event) => void;
 
         /**
@@ -21,9 +21,11 @@ module pt.model {
         protected unfirableWithNoArg = false;
         protected pause = false;
 
-        protected allowedTriggers:Array<any>;
+        protected allowedTriggers: Array<any>;
 
-        get Id(): string{
+        protected state: pt.state.GameState;
+
+        get Id(): string {
             if (this.id == null) {
                 this.id = pt.util.getRandomStr();
             }
@@ -85,6 +87,8 @@ module pt.model {
         }
 
         public callOnCreate(parent: pt.object.GameObject, arg?) {
+            this.state = <pt.state.GameState>parent.game.state.getCurrentState();
+
             if (this.onCreate != null) {
                 this.onCreate(parent, arg);
             }
@@ -94,6 +98,7 @@ module pt.model {
          * fire event. this starts update loop until Event#done is called
          */
         public fire(parent: pt.object.GameObject, from?: pt.object.GameObject, arg?) {
+            this.state = <pt.state.GameState>parent.game.state.getCurrentState();
             if (arg == null && this.unfirableWithNoArg && !this.isAllowedTrigger(from)) {
                 return;
             }
@@ -119,6 +124,7 @@ module pt.model {
 
         public callOnUpdate(parent: pt.object.GameObject) {
             if (!this.hasDone && this.onUpdate != null && !this.Pause) {
+                this.state = <pt.state.GameState>parent.game.state.getCurrentState();
                 this.onUpdate(parent);
             }
         }
@@ -127,6 +133,7 @@ module pt.model {
          * stops update loop and call onDone callback set in Event#fire
          */
         public done(destroy = false) {
+            //this.state = <pt.state.GameState>parent.game.state.getCurrentState();
             this.hasDone = true;
             if (this.onDone != null) {
                 this.onDone(this);

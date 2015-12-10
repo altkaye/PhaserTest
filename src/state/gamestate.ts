@@ -5,7 +5,6 @@
 module pt.state {
     export class GameState extends Phaser.State {
         private cursol;
-
         private map: pt.object.Map;
 
 

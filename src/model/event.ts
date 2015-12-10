@@ -1,7 +1,7 @@
 
 ///<reference path="../object/gameobject.ts"/>
 module pt.model {
-    export class Event {
+    export class Event {//TODO implements IPromise, IThenable
         protected id:string;
 
         protected onUpdate: (parent: pt.object.GameObject) => void;

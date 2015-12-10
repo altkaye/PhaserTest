@@ -41,14 +41,17 @@ module pt.model {
     }
 
     class Then extends LinkedEvent {
-        private func: () => void;
-        constructor(func: () => void = () => { }) {
+        private func: (prev?, next?) => void;
+        public prev: LinkedEvent;
+
+        constructor(func: (prev?, next?) => void = () => { }, prev) {
             super(null, null, null);
             this.func = func;
+            this.prev = prev;
         }
 
         public fire() {
-            this.func();
+            this.func(this.prev, this.next);
             if (this.next != null) {
                 this.next.fire();
             }
@@ -82,7 +85,7 @@ module pt.model {
             return this.push(lev);
         }
 
-        public push(le: LinkedEvent) {
+        private push(le: LinkedEvent) {
             if (this.queue.length != 0) {
                 this.last.setNext(le);
             }
@@ -90,8 +93,8 @@ module pt.model {
             return this;
         }
 
-        public then(func: () => void) {
-            var t = new Then(func);
+        public then(func: (prev?:LinkedEvent, next?:LinkedEvent) => void) {
+            var t = new Then(func, this.last);
             return this.push(t);
         }
 
@@ -113,7 +116,7 @@ module pt.model {
 
         public begin() {
             if (!this.last.hasNext()) {
-                this.last.setNext(new Then());
+                this.last.setNext(new Then(null, null));
             }
             this.queue[0].fire();
             return this;

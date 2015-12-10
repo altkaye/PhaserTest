@@ -46,7 +46,7 @@ module pt.model {
             if (this.enter.justDown && pt.manager.FocusManager.isFocused(this)) {
                 console.log("try to fire events");
                 var rect = parent.getFireRect();
-                //console.log(rect);
+                console.log(rect);
                 this.map.fireEvents(parent, rect);
             }
 

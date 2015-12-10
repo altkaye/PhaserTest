@@ -7,6 +7,8 @@ module pt.object {
         private data: pt.model.MapLayerData;
         private sprite: pt.sprite.MapLayerSprite;
 
+        private objectGroup: Phaser.Group;
+
         get Sprite():pt.sprite.MapLayerSprite {
             return this.sprite;
         }
@@ -16,7 +18,32 @@ module pt.object {
             this.data = data;
             this.name = data.Name;
             this.sprite = new pt.sprite.MapLayerSprite(game, data);
+            this.objectGroup = new Phaser.Group(this.game);
+
             this.addChild(this.sprite);
+            this.addChild(this.objectGroup);
+        }
+
+        public addGameObject(o: pt.object.GameObject, updateData: boolean = true) {
+            this.objectGroup.addChild(o);
+        }
+
+        public removeGameObject(o: pt.object.GameObject, updateData: boolean = true) {
+            return this.objectGroup.removeChild(o);
+        }
+
+        public hasGameObject(o: pt.object.GameObject) {
+            return this.objectGroup.children.indexOf(o) >= 0;
+        }
+
+        private reorder() {
+            this.objectGroup.sort("y", Phaser.Group.SORT_ASCENDING);
+        }
+
+        public update() {
+            super.update();
+
+            this.reorder();
         }
 
         public has(o) {
@@ -121,7 +148,7 @@ module pt.object {
                 this.data.addGameObject(obj.Data);
             }
             this.gameObjects.push(obj);
-            this.addChildInLayer(obj, obj.layer);
+            this.addObjectInLayer(obj, obj.layer);
         }
 
         public removeGameObject(obj:pt.object.GameObject, updateData = true) {
@@ -133,10 +160,10 @@ module pt.object {
         }
 
         /** add object */
-        public addChildInLayer(o:PIXI.DisplayObjectContainer, layer: string | number = 0) {
+        public addObjectInLayer(o:pt.object.GameObject, layer: string | number = 0) {
             var l = this.getLayer(layer);
             if (l) {
-                return l.addChild(o);
+                return l.addGameObject(o);
             } else {
                 return null;
             }
@@ -164,6 +191,8 @@ module pt.object {
                 this.layers.forEach((l) => {
                     if (l.children.indexOf(o) >= 0) {
                         ret = l.removeChild(o);
+                    } else if (l.hasGameObject(<any>o)) {
+                        ret = l.removeGameObject(<any>o);
                     }
                 });
                 return ret;

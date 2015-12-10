@@ -46,21 +46,21 @@
             </nav>
         </div>
         <main class="mdl-layout__content">
-            <div class="page-content">
+            <div class="page-content" style="height:100%">
                 <!-- Your content goes here -->
-                <div class="mdl-grid">
-                    <div id="editorbody" class="mdl-cell" style="width:640px;height:480px;">
+                <div class="mdl-grid"　style="height:100%">
+                    <div id="editorbody" class="mdl-cell mdl-cell--8-col" style="">
                     </div>
                     <script>
                         window.onload = function()  {
-                            var edit = new pt.editor.MapEditor();
-                            m.mount(document.getElementById("editorbody"), edit);
+                            //var edit = new pt.editor.MapEditor();
+                            m.mount(document.getElementById("editorbody"), pt.editor.MapEditor);
                             //pt.util.downloadAsFile("hoge.txt", "aaaaaaaa");
                         };
                     </script>
 
 
-                    <div class="mdl-card mdl-shadow--4dp mdl-cell"  style="width:200px;">
+                    <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--4-col"  style="height:100%;">
                         <div class="mdl-card__title">
                             <h2 class="mdl-card__title-text">title Text Goes Here</h2>
                         </div>

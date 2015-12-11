@@ -36,7 +36,7 @@ module pt.sprite {
         }
 
         public drawTile(game: Phaser.Game, x: number, y: number, data: pt.model.MapLayerData, updateTexture = false, canvas: HTMLCanvasElement = this.canvas) {
-            var tile = data.getTile(x, y);
+            var tile = data.getTileFromIndex(x, y);
             if (!tile.equals(pt.model.Tile.EMPTY)) {
                 var chipset = data.getChipSetOf(tile);
                 var image = game.cache.getImage(chipset.Key, true);
@@ -72,9 +72,9 @@ module pt.sprite {
                     //which to check, left or right
                     var lrx = (i == 0 ? x - 1 : x + 1);
 
-                    var cornerTile = data.getTile(cx, cy);
-                    var lrTile = data.getTile(lrx, y);
-                    var tbTile = data.getTile(x, tby);
+                    var cornerTile = data.getTileFromIndex(cx, cy);
+                    var lrTile = data.getTileFromIndex(lrx, y);
+                    var tbTile = data.getTileFromIndex(x, tby);
 
                     var src = {
                         x: 0, y: 0, w: 0, h: 0

@@ -7,7 +7,6 @@ module pt.state {
         private cursol;
         private map: pt.object.Map;
 
-
         public init(...args) {
             super.init(args);
         }
@@ -30,6 +29,10 @@ module pt.state {
             this.map = new pt.object.Map(this.game, data);
             this.world.addChild(this.map);
             this.world.setBounds(0, 0, this.map.Width, this.map.Height);
+        }
+
+        public transit(nextMap) {
+            //TODO
         }
 
         public update(): void {

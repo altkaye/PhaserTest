@@ -9,7 +9,7 @@ module pt.object {
 
         private objectGroup: Phaser.Group;
 
-        get Sprite():pt.sprite.MapLayerSprite {
+        get Sprite(): pt.sprite.MapLayerSprite {
             return this.sprite;
         }
 
@@ -22,6 +22,40 @@ module pt.object {
 
             this.addChild(this.sprite);
             this.addChild(this.objectGroup);
+        }
+
+        public getTilesWithin(rect: Phaser.Rectangle) {
+            var ret: Array<pt.model.Tile> = [];
+            var diffX = rect.width < this.data.TileSize ? rect.width : this.data.TileSize;
+            var diffY = rect.height < this.data.TileSize ? rect.height : this.data.TileSize;
+
+            for (let x = rect.x; x <= rect.right; x += diffX) {
+                for (let y = rect.y; y <= rect.left; y += diffY) {
+                    var tile = this.data.getTile(x, y);
+                    if (!(ret.indexOf(tile) >= 0)) {
+                        ret.push(tile);
+                    }
+                }
+            }
+            return ret;
+        }
+
+        public collidesObject(rect: Phaser.Rectangle) {
+            //TODO
+        }
+
+        public collidesMap(rect: Phaser.Rectangle) {
+            var diffX = rect.width < this.data.TileSize ? rect.width : this.data.TileSize;
+            var diffY = rect.height < this.data.TileSize ? rect.height : this.data.TileSize;
+
+            for (let x = rect.x; x <= rect.right; x += diffX) {
+                for (let y = rect.y; y <= rect.left; y += diffY) {
+                    if (this.data.isPassable(x, y)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public addGameObject(o: pt.object.GameObject, updateData: boolean = true) {
@@ -78,7 +112,7 @@ module pt.object {
     }
 
     export class Map extends Phaser.Group {
-        private data:pt.model.MapData;
+        private data: pt.model.MapData;
 
         private layers: Array<MapLayer>;
         private gameObjects: Array<pt.object.GameObject>;
@@ -95,7 +129,7 @@ module pt.object {
             return this.height;
         }
 
-        get Data():pt.model.MapData {
+        get Data(): pt.model.MapData {
             return this.data;
         }
 
@@ -119,7 +153,7 @@ module pt.object {
             return ret;
         }
 
-        public findEventById(id:string) {
+        public findEventById(id: string) {
             var ret = null;
             this.gameObjects.some((o) => {
                 return (ret = o.findEventById(id)) != null;
@@ -127,7 +161,7 @@ module pt.object {
             return ret;
         }
 
-        public fireEvents(from:pt.object.GameObject, rect:Phaser.Rectangle = from.getHitRect(), layer:number = from.layer, fireTop:boolean = false) {
+        public fireEvents(from: pt.object.GameObject, rect: Phaser.Rectangle = from.getHitRect(), layer: number = from.layer, fireTop: boolean = false) {
             var objs = this.gameObjects;
             for (var i = 0; i < objs.length; i++) {
                 var o = objs[i];
@@ -139,7 +173,7 @@ module pt.object {
             }
         }
 
-        public addGameObject(obj:pt.object.GameObject, layer?, updateData = true) {
+        public addGameObject(obj: pt.object.GameObject, layer?, updateData = true) {
             if (layer != null) {
                 this.removeGameObject(obj, updateData);
                 obj.layer = layer;
@@ -151,7 +185,7 @@ module pt.object {
             this.addObjectInLayer(obj, obj.layer);
         }
 
-        public removeGameObject(obj:pt.object.GameObject, updateData = true) {
+        public removeGameObject(obj: pt.object.GameObject, updateData = true) {
             if (updateData) {
                 this.data.removeGameObject(obj.Data);
             }
@@ -160,7 +194,7 @@ module pt.object {
         }
 
         /** add object */
-        public addObjectInLayer(o:pt.object.GameObject, layer: string | number = 0) {
+        public addObjectInLayer(o: pt.object.GameObject, layer: string | number = 0) {
             var l = this.getLayer(layer);
             if (l) {
                 return l.addGameObject(o);
@@ -169,16 +203,16 @@ module pt.object {
             }
         }
 
-        public getLayerOf(o:pt.object.GameObject) {
-           for (var i = 0; i < this.layers.length; i++) {
-               if (this.layers[i].has(o)) {
-                   return this.layers[i];
-               }
-           }
-           return null;
+        public getLayerOf(o: pt.object.GameObject) {
+            for (var i = 0; i < this.layers.length; i++) {
+                if (this.layers[i].has(o)) {
+                    return this.layers[i];
+                }
+            }
+            return null;
         }
 
-        public removeChild(o:PIXI.DisplayObjectContainer, searchLayers = true) {
+        public removeChild(o: PIXI.DisplayObjectContainer, searchLayers = true) {
             if (!searchLayers) {
                 return super.removeChild(o);
             }

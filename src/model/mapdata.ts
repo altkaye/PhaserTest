@@ -21,7 +21,7 @@ module pt.model {
     }
 
     export enum Passability {
-        PASSABLE = 0, IMPASSABLE = -1
+        PASSABLE = 0, IMPASSABLE = -1, DEFAULT = -2
     }
 
     export enum ChipSetType {
@@ -34,6 +34,8 @@ module pt.model {
         private key: string;
         private id: number;
 
+        private passability: Passability;
+
         get Key(): string {
             return this.key;
         }
@@ -42,8 +44,20 @@ module pt.model {
             return this.id;
         }
 
-        public static fromJSON(json:any):Tile {
-            return new Tile(json.key, json.id);
+        get isPassable() {
+            return this.passability == Passability.PASSABLE;
+        }
+
+        set Passability(v) {
+            this.passability = v;
+        }
+
+        public static fromJSON(json: any): Tile {
+            var ret = new Tile(json.key, json.id);
+            if (json.passability) {
+                ret.Passability = json.passability;
+            }
+            return ret;
         }
 
         constructor(key: string, id: number) {
@@ -66,6 +80,14 @@ module pt.model {
         private passabilities: Array<Passability>;
         private tileSize: number;
 
+        get chipSize(): number {
+            return this.chipsets[0].Size;
+        }
+
+        get TileSize(): number {
+            return this.tileSize;
+        }
+
         get Column(): number {
             return this.column;
         }
@@ -75,11 +97,11 @@ module pt.model {
         get Chipsets(): Array<ChipSet> {
             return this.chipsets;
         }
-        get Name() :string {
+        get Name(): string {
             return this.name;
         }
 
-        public static fromJSON(json:any) {
+        public static fromJSON(json: any) {
             var chipsets = [];
             json.chipsets.forEach((c) => {
                 chipsets.push(ChipSet.fromJSON(c));
@@ -87,6 +109,7 @@ module pt.model {
             var tiles = []
             json.tiles.forEach((t) => {
                 tiles.push(Tile.fromJSON(t));
+
             });
             return new MapLayerData(json.name, json.column, json.row, chipsets, tiles, json.passabilities, json.tileSize);
         }
@@ -109,13 +132,17 @@ module pt.model {
             return this.tileSize * this.row;
         }
 
-        public getTile(x: number, y: number): Tile {
-            var ret = this.tiles[this.getIndexOf(x, y)];
+        public getTileFromIndex(tx: number, ty: number): Tile {
+            var ret = this.tiles[this.getIndexOf(tx, ty)];
             if (!ret) {
                 return Tile.EMPTY;
             } else {
                 return ret;
             }
+        }
+
+        public getTile(x, y): Tile {
+            return this.getTileFromIndex(this.toTileIndex(x), this.toTileIndex(y));
         }
 
         public getChipSetOf(tile: Tile): ChipSet {
@@ -128,7 +155,7 @@ module pt.model {
             return ret;
         }
 
-        public addTile(id: number, x: number, y: number, chipsetKey: string | ChipSet = this.chipsets[0], passability?: Passability): boolean {
+        public addTile(id: number, tx: number, ty: number, chipsetKey: string | ChipSet = this.chipsets[0], passability?: Passability): boolean {
             var chipset: ChipSet;
 
             var has: boolean = this.chipsets.some((c) => {
@@ -151,16 +178,16 @@ module pt.model {
 
             if (has) {
                 var tile = new pt.model.Tile(chipset.Key, id);
-                this.tiles[this.getIndexOf(x, y)] = tile;
+                this.tiles[this.getIndexOf(tx, ty)] = tile;
                 passability = passability || chipset.getPassability(id);
-                this.setPassability(x, y, passability);
+                this.setPassability(tx, ty, passability);
                 return true;
             } else if (typeof chipsetKey !== "string") {
                 this.addChipSet(chipsetKey);
                 var tile = new pt.model.Tile(chipsetKey.Key, id);
-                this.tiles[this.getIndexOf(x, y)] = tile;
+                this.tiles[this.getIndexOf(tx, ty)] = tile;
                 passability = passability || chipsetKey.getPassability(id);
-                this.setPassability(x, y, passability);
+                this.setPassability(tx, ty, passability);
                 return true;
             } else {
                 return false;
@@ -169,10 +196,25 @@ module pt.model {
 
         public setPassability(x: number, y: number, pass: Passability) {
             this.passabilities[this.getIndexOf(x, y)] = pass;
+            this.tiles[this.getIndexOf(x, y)].Passability = pass;
         }
 
-        private getIndexOf(x: number, y: number): number {
-            return x + y * this.column;
+        /**
+         * @param x actual position
+         * @param y actual position
+         */
+        public isPassable(x: number, y: number): boolean {
+            var tx = this.toTileIndex(x);
+            var ty = this.toTileIndex(y);
+            return this.passabilities[this.getIndexOf(tx, ty)] >= 0;
+        }
+
+        private getIndexOf(tx: number, ty: number): number {
+            return tx + ty * this.column;
+        }
+
+        private toTileIndex(v: number) {
+            return Math.floor(v / this.tileSize);
         }
 
         public addChipSet(chipset: ChipSet): MapLayerData {
@@ -180,7 +222,7 @@ module pt.model {
             return this;
         }
 
-        public removeChipSet(chipset:ChipSet) {
+        public removeChipSet(chipset: ChipSet) {
             return this.chipsets.splice(this.chipsets.indexOf(chipset), 1);
         }
     }
@@ -193,15 +235,15 @@ module pt.model {
         private layers: Array<MapLayerData>;
         private gameObjects: Array<GameObjectData>;
 
-        get Name():string {
+        get Name(): string {
             return this.name;
         }
 
         /**
          * get all ChipSet used in this map
          */
-        get Chipsets():Array<ChipSet> {
-            var ret:Array<ChipSet> = [];
+        get Chipsets(): Array<ChipSet> {
+            var ret: Array<ChipSet> = [];
             this.layers.forEach((l) => {
                 ret = ret.concat(l.Chipsets);
             });
@@ -217,7 +259,7 @@ module pt.model {
             return ret;
         }
 
-        get AssetKeys():Array<string> {
+        get AssetKeys(): Array<string> {
             var ret = [];
             this.Chipsets.forEach((c) => {
                 ret.push(c.Key);
@@ -225,7 +267,7 @@ module pt.model {
             return ret;
         }
 
-        get AssetPaths():Array<string> {
+        get AssetPaths(): Array<string> {
             var ret = [];
             this.Chipsets.forEach((c) => {
                 ret.push(c.Path);
@@ -233,23 +275,23 @@ module pt.model {
             return ret;
         }
 
-        public removeChipSet(chipset:ChipSet) {
+        public removeChipSet(chipset: ChipSet) {
             this.layers.forEach((l) => {
                 l.removeChipSet(chipset);
             });
         }
 
-        public addChipSet(c:ChipSet) {
+        public addChipSet(c: ChipSet) {
             this.layers.forEach((l) => {
                 l.addChipSet(c);
             });
         }
 
-        public addGameObject(obj:pt.model.GameObjectData) {
+        public addGameObject(obj: pt.model.GameObjectData) {
             this.gameObjects.push(obj);
         }
 
-        public removeGameObject(obj:pt.model.GameObjectData) {
+        public removeGameObject(obj: pt.model.GameObjectData) {
             var index = this.gameObjects.indexOf(obj);
             if (index >= 0) {
                 this.gameObjects.splice(index, 1);
@@ -259,19 +301,19 @@ module pt.model {
         public getLayer(i) {
             return this.layers[i];
         }
-        
+
         public getGameObjects() {
             return this.gameObjects;
         }
 
         public toJSON() {
             var ret = {
-                id:this.id,
-                name:this.name,
-                column:this.column,
-                row:this.row,
-                layers:this.layers,
-                gameObjects:[]
+                id: this.id,
+                name: this.name,
+                column: this.column,
+                row: this.row,
+                layers: this.layers,
+                gameObjects: []
             }
             this.gameObjects.forEach((o) => {
                 ret.gameObjects.push(o.toJSON());
@@ -283,7 +325,7 @@ module pt.model {
             return JSON.stringify(this.toJSON(), null, space);
         }
 
-        public static fromJSON(json:any):MapData {
+        public static fromJSON(json: any): MapData {
             var layers = [];
             json.layers.forEach((l) => {
                 layers.push(MapLayerData.fromJSON(l));
@@ -307,7 +349,7 @@ module pt.model {
         }
 
 
-        get Layers():Array<MapLayerData> {
+        get Layers(): Array<MapLayerData> {
             return this.layers;
         }
 
@@ -341,7 +383,7 @@ module pt.model {
             return this.path;
         }
 
-        public static fromJSON(json:any):ChipSet {
+        public static fromJSON(json: any): ChipSet {
             return new ChipSet(json.key, json.path, json.size, json.type, json.defaultPassability);
         }
 

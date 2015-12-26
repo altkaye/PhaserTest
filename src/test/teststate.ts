@@ -148,9 +148,9 @@ module pt.test {
 
             var sample4 = new pt.object.GameObject(this.game, data);
             sample4.position.setTo(100, 100);
-            var moveArg = pt.model.Move.buildArg(sample4.position.x, sample4.position.y, 64);
+            var moveArg = pt.model.Move.buildArg(map, sample4.position.x, sample4.position.y, 64);
             map.addGameObject(sample4, 0);
-            
+
             var flow = new pt.model.EventFlow();
             flow.next(new pt.model.Move(), sample4, null, moveArg)
                 .next(new pt.model.Wait(), sample4, null, 1)

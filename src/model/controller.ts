@@ -55,7 +55,7 @@ module pt.model {
                 if (to.x != 0 || to.y != 0) {
                     to.setMagnitude(8)
                         .add(parent.position.x, parent.position.y);
-                    this.move.fire(parent, null, pt.model.Move.buildArg(to.x, to.y, this.speed));
+                    this.move.fire(parent, null, pt.model.Move.buildArg(this.map, to.x, to.y, this.speed));
                 }
             }
         }

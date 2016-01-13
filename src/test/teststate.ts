@@ -65,6 +65,8 @@ module pt.test {
 
             con.fire(player, null, {map:map, tps:5});
             this.game.camera.follow(<any>player);
+
+            console.log(player.getHitRect());
         }
 
         private testNPCObj(map: pt.object.Map) {

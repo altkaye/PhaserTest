@@ -13,6 +13,9 @@ module pt.model {
         private enter: Phaser.Key;
         private move: pt.model.Move;
 
+        public _showFireRect: boolean;
+        private _fireHitBox: Phaser.Graphics;
+
         constructor() {
             super(this.begin, this.init, this.update);
         }

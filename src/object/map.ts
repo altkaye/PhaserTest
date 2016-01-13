@@ -41,7 +41,9 @@ module pt.object {
         }
 
         public collidesObject(rect: Phaser.Rectangle) {
-            //TODO
+            return this.objectGroup.children.some((o :pt.object.GameObject) => {
+                return pt.util.collidesRect(o.getHitRect(), rect);
+            });
         }
 
         public collidesMap(rect: Phaser.Rectangle) {

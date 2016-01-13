@@ -6,34 +6,37 @@
 
 module pt.object {
     export class GameObject extends Phaser.Group {
-        private data:pt.model.GameObjectData;
-        private sprite:pt.sprite.CharacterSprite|Phaser.Sprite;
+        private data: pt.model.GameObjectData;
+        private sprite: pt.sprite.CharacterSprite | Phaser.Sprite;
 
-        get id():string {
+        public _showHitBox = true;
+        private hitBox: Phaser.Graphics;
+
+        get id(): string {
             return this.data.id;
         };
 
-        get Position():Phaser.Point {
+        get Position(): Phaser.Point {
             return this.position;
         }
 
-        get forward():Phaser.Point {
+        get forward(): Phaser.Point {
             return new Phaser.Point(this.data.forward.x, this.data.forward.y);
         };
 
-        get imageKey():string {
+        get imageKey(): string {
             return this.data.key;
         };
 
-        get gameEvents():Array<pt.model.Event> {
+        get gameEvents(): Array<pt.model.Event> {
             return this.data.gameEvents;
         };
 
-        get imageType():pt.model.ImageType {
+        get imageType(): pt.model.ImageType {
             return this.data.imageType;
         };
 
-        get layer():number {
+        get layer(): number {
             return this.data.position.layer;
         };
 
@@ -41,19 +44,19 @@ module pt.object {
             this.data.position.layer = v;
         }
 
-        get frame():string|number {
+        get frame(): string | number {
             return this.data.frame;
         };
 
-        get storage():any {
+        get storage(): any {
             return this.data.storage();
         };
 
-        get Sprite():pt.sprite.CharacterSprite|Phaser.Sprite {
+        get Sprite(): pt.sprite.CharacterSprite | Phaser.Sprite {
             return this.sprite;
         }
 
-        get ImageType():pt.model.ImageType {
+        get ImageType(): pt.model.ImageType {
             return this.imageType;
         }
 
@@ -61,7 +64,7 @@ module pt.object {
             return this.storage;
         }
 
-        constructor(game:Phaser.Game, data:pt.model.GameObjectData = pt.model.GameObjectData.EMPTY()) {
+        constructor(game: Phaser.Game, data: pt.model.GameObjectData = pt.model.GameObjectData.EMPTY()) {
             super(game);
             this.data = data;
 
@@ -92,21 +95,21 @@ module pt.object {
             return null;
         }
 
-        public updateForward(f:Phaser.Point) {
+        public updateForward(f: Phaser.Point) {
             this.data.forward = f;
             if (this.imageType === pt.model.ImageType.CHARACTER) {
                 (<pt.sprite.CharacterSprite>this.sprite).updateAnimation(f);
             }
         }
 
-        public addEvent(ev:pt.model.Event) :pt.model.Event {
+        public addEvent(ev: pt.model.Event): pt.model.Event {
             this.gameEvents.push(ev);
             ev.callOnCreate(this);
 
             return ev;
         }
 
-        public hasEvent(ev:pt.model.Event) : boolean {
+        public hasEvent(ev: pt.model.Event): boolean {
             return this.gameEvents.indexOf(ev) >= 0;
         }
 
@@ -116,14 +119,27 @@ module pt.object {
             });
         }
 
-        public removeEvent(ev:pt.model.Event) {
+        public removeEvent(ev: pt.model.Event) {
             if (this.hasEvent(ev)) {
                 this.gameEvents.splice(this.gameEvents.indexOf(ev), 1);
             }
             return ev;
         }
 
-        private updateSprite(game:Phaser.Game = this.game, key:string = this.imageKey, imageType:pt.model.ImageType = this.imageType, frame = this.frame) {
+        private _updateHitBox(game) {
+            if (this.hitBox == null) {
+                this.hitBox = new Phaser.Graphics(game);
+                var rect = this.getHitRect();
+                //console.log(rect);
+                this.hitBox.lineStyle(2, 0x0000FF, 1);
+                this.hitBox.drawRect(-rect.width/2, -rect.height/2, rect.width, rect.height);
+                this.addChild(this.hitBox);
+            }
+
+            this.hitBox.alive = this._showHitBox;
+        }
+
+        private updateSprite(game: Phaser.Game = this.game, key: string = this.imageKey, imageType: pt.model.ImageType = this.imageType, frame = this.frame) {
             if (this.sprite && this.children.indexOf(this.sprite) >= 0) {
                 this.removeChild(this.sprite);
             }
@@ -136,12 +152,14 @@ module pt.object {
                 this.sprite = new Phaser.Sprite(game, 0, 0, key);
             } else if (imageType === pt.model.ImageType.SPRITESHEET) {
                 this.sprite = new Phaser.Sprite(game, 0, 0, key, frame);
-            }　else {
+            } 　else {
                 return;
             }
 
             this.addChild(this.sprite);
             this.sprite.anchor.set(0.5, 0.5);
+
+            this._updateHitBox(game);
         }
 
         private syncData() {
@@ -161,7 +179,7 @@ module pt.object {
             this.syncData();
         }
 
-        get Data():pt.model.GameObjectData {
+        get Data(): pt.model.GameObjectData {
             return this.data;
         }
     }

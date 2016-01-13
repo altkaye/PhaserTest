@@ -44,7 +44,7 @@ module pt.model {
                 if (this.collides) {
                     var layer = this.map.getLayerOf(parent);
                     var rect = parent.getHitRect();
-                    if (layer.collidesMap(rect)) {
+                    if (layer.collidesMap(rect) || layer.collidesObject(rect)) {
                         d = this.getMovableDiff(rect, d, layer);
                     }
                 }
@@ -53,14 +53,14 @@ module pt.model {
             }
         }
 
-        private getMovableDiff(rect, d, layer) {
+        private getMovableDiff(rect, d, layer: pt.object.MapLayer) {
             var noDx = Phaser.Rectangle.clone(rect).offset(0, d.y);
-            if (!layer.collidesMap(noDx)) {
+            if (!layer.collidesMap(noDx) && !layer.collidesObject(noDx)) {
                 return new Phaser.Point(0, d.y);
             }
 
             var noDy = Phaser.Rectangle.clone(rect).offset(d.x, 0);
-            if (!layer.collidesMap(noDy)) {
+            if (!layer.collidesMap(noDy) && !layer.collidesObject(noDy)) {
                 return new Phaser.Point(d.x, 0);
             }
 

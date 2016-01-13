@@ -40,9 +40,12 @@ module pt.object {
             return ret;
         }
 
-        public collidesObject(rect: Phaser.Rectangle) {
+        public collidesObject(rect: Phaser.Rectangle, parent:pt.object.GameObject = null, log = false) {
             return this.objectGroup.children.some((o :pt.object.GameObject) => {
-                return pt.util.collidesRect(o.getHitRect(), rect);
+                if (log) {
+                    console.log(o);
+                }
+                return parent != o && pt.util.collidesRect(o.getHitRect(), rect);
             });
         }
 
@@ -50,9 +53,9 @@ module pt.object {
             var diffX = rect.width < this.data.TileSize ? rect.width : this.data.TileSize;
             var diffY = rect.height < this.data.TileSize ? rect.height : this.data.TileSize;
 
-            for (let x = rect.x; x <= rect.right; x += diffX) {
-                for (let y = rect.y; y <= rect.left; y += diffY) {
-                    if (this.data.isPassable(x, y)) {
+            for (var x = rect.x; x <= rect.right; x += diffX) {
+                for (var y = rect.y; y <= rect.left; y += diffY) {
+                    if (!this.data.isPassable(x, y)) {
                         return true;
                     }
                 }

@@ -25,7 +25,7 @@ module pt.model {
             this.unfirableWithNoArg = true;
         }
 
-        private begin(parent:pt.object.GameObject, from, param: { map: pt.object.Map, speed: number, tps?:number }) {
+        private begin(parent: pt.object.GameObject, from, param: { map: pt.object.Map, speed: number, tps?: number }) {
             this.cursol = parent.game.input.keyboard.createCursorKeys();
             this.enter = parent.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 
@@ -51,14 +51,20 @@ module pt.model {
                 var rect = parent.getFireRect();
                 console.log(rect);
                 this.map.fireEvents(parent, rect);
+
+                var hit = this.map.getLayer(parent.layer).collidesObject(parent.getHitRect(), parent);
+                console.log("collidesObj:" + hit);
+
+                hit = this.map.getLayer(parent.layer).collidesMap(parent.getHitRect());
+                console.log("collidesMap:" + hit);
             }
 
-            if (this.move.HasDone && pt.manager.FocusManager.isFocused(this)) {
+            if (pt.manager.FocusManager.isFocused(this)) {
                 var to = pt.util.buildInputVector(this.cursol);
                 if (to.x != 0 || to.y != 0) {
                     to.setMagnitude(8)
                         .add(parent.position.x, parent.position.y);
-                    this.move.fire(parent, null, pt.model.Move.buildArg(this.map, to.x, to.y, this.speed));
+                    this.move.fire(parent, null, pt.model.Move.buildArg(this.map, to.x, to.y, this.speed, false, true));
                 }
             }
         }

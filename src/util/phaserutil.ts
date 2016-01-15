@@ -16,6 +16,18 @@ module pt.util {
         return { x: lx, y: ly };
     }
 
+    export function isKeyDown(key: Phaser.Key) {
+        return key.repeats == 1 && key.isDown;
+    }
+
+    export function isKeyUp(key: Phaser.Key) {
+        return key.isUp;
+    }
+
+    export function isKeyPressed(key: Phaser.Key) {
+        return key.isDown;
+    }
+
     export function writeFile(name, content) {
         return writeToLocal(name, content);
     }

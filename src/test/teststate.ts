@@ -76,7 +76,7 @@ module pt.test {
             map.addGameObject(npc, 0);
             var conv = new pt.model.Message();
             npc.addEvent(conv);
-            conv.pushMessage("<p>npcだよ</p>");
+            conv.pushMessage("<p>hello world</p><p>npcだよ</p>");
         }
 
         private testSound() {

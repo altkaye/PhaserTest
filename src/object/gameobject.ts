@@ -12,6 +12,8 @@ module pt.object {
         public _showHitBox = true;
         private hitBox: Phaser.Graphics;
 
+        private inputManager;
+
         get id(): string {
             return this.data.id;
         };

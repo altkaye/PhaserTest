@@ -29,8 +29,8 @@ module pt.object {
             var diffX = rect.width < this.data.TileSize ? rect.width : this.data.TileSize;
             var diffY = rect.height < this.data.TileSize ? rect.height : this.data.TileSize;
 
-            for (let x = rect.x; x <= rect.right; x += diffX) {
-                for (let y = rect.y; y <= rect.left; y += diffY) {
+            for (var x = rect.x; x <= rect.right; x += diffX) {
+                for (var y = rect.y; y <= rect.left; y += diffY) {
                     var tile = this.data.getTile(x, y);
                     if (!(ret.indexOf(tile) >= 0)) {
                         ret.push(tile);
@@ -49,7 +49,15 @@ module pt.object {
             });
         }
 
+        private isOutOfBound(rect: Phaser.Rectangle) {
+            return rect.left < 0 || this.data.getWidth() < rect.right
+                || rect.top < 0 || this.data.getHeight() < rect.bottom;
+        }
+
         public collidesMap(rect: Phaser.Rectangle) {
+            if (this.isOutOfBound(rect)) {
+                return true;
+            }
             var diffX = rect.width < this.data.TileSize ? rect.width : this.data.TileSize;
             var diffY = rect.height < this.data.TileSize ? rect.height : this.data.TileSize;
 

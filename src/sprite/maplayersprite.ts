@@ -37,7 +37,7 @@ module pt.sprite {
 
         public drawTile(game: Phaser.Game, x: number, y: number, data: pt.model.MapLayerData, updateTexture = false, canvas: HTMLCanvasElement = this.canvas) {
             var tile = data.getTileFromIndex(x, y);
-            if (!tile.equals(pt.model.Tile.EMPTY)) {
+            if (!tile.equals(pt.model.Tile.EMPTY())) {
                 var chipset = data.getChipSetOf(tile);
                 var image = game.cache.getImage(chipset.Key, true);
                 var context = canvas.getContext("2d");

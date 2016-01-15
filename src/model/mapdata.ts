@@ -29,7 +29,9 @@ module pt.model {
     }
 
     export class Tile {
-        public static EMPTY: Tile = new Tile("", -1);
+        public static EMPTY(): Tile {
+            return new Tile("", -1);
+        }
 
         private key: string;
         private id: number;
@@ -135,7 +137,7 @@ module pt.model {
         public getTileFromIndex(tx: number, ty: number): Tile {
             var ret = this.tiles[this.getIndexOf(tx, ty)];
             if (!ret) {
-                return Tile.EMPTY;
+                return Tile.EMPTY();
             } else {
                 return ret;
             }

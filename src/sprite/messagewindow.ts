@@ -1,6 +1,7 @@
 ///<reference path="../../phaser/typescript/phaser.d.ts"/>
 ///<reference path="panelsprite.ts"/>
 ///<reference path="../manager/focusmanager.ts"/>
+///<reference path="../util/phaserutil.ts"/>
 module pt.sprite {
     export class MessageWindow extends Phaser.Group {
         private panel: pt.sprite.PanelSprite;
@@ -16,6 +17,9 @@ module pt.sprite {
 
         private currentIndex = 0;
 
+        private _justOpened = false;
+        private _justClosed = false;
+
         get IsOpened() {
             return this.isOpened;
         }
@@ -29,9 +33,26 @@ module pt.sprite {
         }
 
         public update() {
-            if (this.enterKey.justDown) {
+            if (this._justOpened) {
+                this._justOpened = false;
+                return;
+            }
+
+            if (this._justClosed) {
+                pt.manager.FocusManager.remove(this);
+                this.removeChild(this.panel);
+                this.removeChild(this.text);
+                this.isOpened = false;
+                if (this.onClose != null) {
+                    this.onClose(this);
+                }
+                return;
+            }
+
+            if (pt.util.isKeyDown(this.enterKey)) {
                 this.onEnterKeyDown();
             }
+
         }
 
         public addToStage(x = this.game.width / 2, y = this.game.width * 2 / 3) {
@@ -48,13 +69,8 @@ module pt.sprite {
         }
 
         public close() {
-            pt.manager.FocusManager.remove(this);
-            this.removeChild(this.panel);
-            this.removeChild(this.text);
-            this.isOpened = false;
-            if (this.onClose != null) {
-                this.onClose(this);
-            }
+            // close on next frame
+            this._justClosed = true;
         }
 
         public setOnClose(f: (self: MessageWindow) => void) {
@@ -83,11 +99,13 @@ module pt.sprite {
         /**
         * @param src script body
         */
-        public open(src: string, requestFocus = true, addToStage = true) {
+        public open(src: string = null, requestFocus = true, addToStage = true) {
             this.currentIndex = 0;
             if (src != null) {
                 this.pushMessage(src);
             }
+            this._justClosed = false;
+            this._justOpened = true;
             this.panel = new pt.sprite.PanelSprite(this.game, 0, 0, 300, 50, this.imageKey);
             this.panel.anchor.setTo(0.5, 0.5);
             var style = {

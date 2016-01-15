@@ -10,7 +10,7 @@ module pt.model {
         private map: pt.object.Map;
         private speed: number;
         private cursol: Phaser.CursorKeys;
-        private enter: Phaser.Key;
+        private enterKey: Phaser.Key;
         private move: pt.model.Move;
 
         public _showFireRect: boolean;
@@ -27,7 +27,7 @@ module pt.model {
 
         private begin(parent: pt.object.GameObject, from, param: { map: pt.object.Map, speed: number, tps?: number }) {
             this.cursol = parent.game.input.keyboard.createCursorKeys();
-            this.enter = parent.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+            this.enterKey = parent.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
             this.map = param.map;
             this.speed = param.speed;
@@ -45,21 +45,24 @@ module pt.model {
             console.log("controller begin");
         }
 
+        private fireEventsOnMap(parent: pt.object.GameObject) {
+            console.log("try to fire events");
+            var rect = parent.getFireRect();
+            console.log(rect);
+            this.map.fireEvents(parent, rect);
+
+            var hit = this.map.getLayer(parent.layer).collidesObject(parent.getHitRect(), parent);
+            console.log("collidesObj:" + hit);
+
+            hit = this.map.getLayer(parent.layer).collidesMap(parent.getHitRect());
+            console.log("collidesMap:" + hit);
+        }
+
         private update(parent: pt.object.GameObject) {
-            if (this.enter.justDown && pt.manager.FocusManager.isFocused(this)) {
-                console.log("try to fire events");
-                var rect = parent.getFireRect();
-                console.log(rect);
-                this.map.fireEvents(parent, rect);
-
-                var hit = this.map.getLayer(parent.layer).collidesObject(parent.getHitRect(), parent);
-                console.log("collidesObj:" + hit);
-
-                hit = this.map.getLayer(parent.layer).collidesMap(parent.getHitRect());
-                console.log("collidesMap:" + hit);
-            }
-
             if (pt.manager.FocusManager.isFocused(this)) {
+                if (pt.util.isKeyDown(this.enterKey)) {
+                    this.fireEventsOnMap(parent);
+                }
                 var to = pt.util.buildInputVector(this.cursol);
                 if (to.x != 0 || to.y != 0) {
                     to.setMagnitude(8)

@@ -132,7 +132,7 @@ module pt.model {
         /**
          * stops update loop and call onDone callback set in Event#fire
          */
-        public done(destroy = false) {
+        public done(destroy = false) {//TODO
             //this.state = <pt.state.GameState>parent.game.state.getCurrentState();
             this.hasDone = true;
             if (this.onDone != null) {

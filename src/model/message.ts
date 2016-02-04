@@ -23,11 +23,11 @@ module pt.model {
         /**
          * @param args [0] script body
          */
-        private begin(from, parent: pt.object.GameObject, arg = "") {
+        protected begin(parent, from: pt.object.GameObject, arg = "") {
             this.mesWindow.open(arg, true, true);
 
             this.mesWindow.setOnClose((f) => {
-                this.done();
+                this.done(true);
             });
 
             this.done = (b) => {

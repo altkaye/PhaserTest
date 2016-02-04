@@ -5,6 +5,7 @@
 ///<reference path="../model/message.ts" />
 ///<reference path="../model/wait.ts" />
 ///<reference path="../model/controller.ts" />
+///<reference path="../model/conversation.ts" />
 ///<reference path="../model/eventflow.ts" />
 ///<reference path="../sprite/charactersprite.ts" />
 ///<reference path="../sprite/panelsprite.ts" />
@@ -59,6 +60,7 @@ module pt.test {
             //test serialize
             var player = new pt.object.GameObject(this.game, pt.model.buildSampleObj());
             player.position.setTo(150, 150);
+            player.id = "player";
             map.addGameObject(player, 0);
             var con = new pt.model.Controller();
             player.addEvent(con);
@@ -73,8 +75,9 @@ module pt.test {
             //test serialize
             var npc = new pt.object.GameObject(this.game, pt.model.buildSampleObj());
             npc.position.setTo(250, 250);
+            npc.id = "npc";
             map.addGameObject(npc, 0);
-            var conv = new pt.model.Message();
+            var conv = new pt.model.Conversation();
             npc.addEvent(conv);
             conv.pushMessage("<p>hello world</p><p>npcだよ</p>");
         }

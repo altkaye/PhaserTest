@@ -16,9 +16,9 @@ module pt.model {
             if (from) {
                 var prevForward = parent.forward.clone(prevForward);
                 var prevOnDone = this.onDone;
-                console.log("--conv--");
-                console.log(parent);
-                console.log(from);
+                //console.log("--conv--");
+                //console.log(parent);
+                //console.log(from);
 
                 parent.updateForward(new Phaser.Point(
                    from.position.x - parent.position.x, from.position.y - parent.position.y
@@ -29,11 +29,11 @@ module pt.model {
                     if (prevOnDone) {
                         prevOnDone(self);
                     }
-                    console.log("fix forward");
+                    //console.log("fix forward");
                     parent.updateForward(prevForward);
                 });
             } else {
-                console.log("no from");
+                //console.log("no from");
             }
         }
     }
